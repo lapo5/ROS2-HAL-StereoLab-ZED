@@ -21,6 +21,7 @@
 """
     Open the camera and start streaming images using H264 codec
 """
+import cv2
 import sys
 import pyzed.sl as sl
 
