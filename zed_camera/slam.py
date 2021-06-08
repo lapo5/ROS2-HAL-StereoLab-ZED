@@ -13,6 +13,7 @@ import threading
 import sys
 import pyzed.sl as sl
 import time
+from scipy.spatial.transform import Rotation as R
 
 # Class definition of the calibration function
 class SLAM_Zed_Node(Node):
