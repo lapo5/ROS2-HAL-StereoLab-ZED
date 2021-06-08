@@ -64,7 +64,6 @@ class SLAM_Zed_Node(Node):
             if self.zed.grab(self.runtime) == sl.ERROR_CODE.SUCCESS:
                 tracking_state = self.zed.get_position(self.camera_pose)
                 if tracking_state == sl.POSITIONAL_TRACKING_STATE.OK:
-                    self.get_logger().info("Publishing Pose")
                     self.rotation = self.camera_pose.get_rotation_vector()
                     self.translation = self.camera_pose.get_translation(self.py_translation)
                     self.pose_data = self.camera_pose.pose_data(sl.Transform())
@@ -98,8 +97,8 @@ class SLAM_Zed_Node(Node):
     # This function stops/enable the acquisition stream
     def exit(self):
 	self.do_slam = False
-        self.zed.close()
         self.thread1.join()
+        self.zed.close()
 
 
 
