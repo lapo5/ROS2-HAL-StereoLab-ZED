@@ -62,8 +62,10 @@ class SLAM_Zed_Node(Node):
 
                 msg = PoseStamped()
 
+                now = time.time()
                 msg.header = Header()
-                msg.header.stamp = self.get_clock().now().to_msg()
+                msg.header.stamp.sec = int(now)
+                msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
                 msg.header.frame_id = "zed_cam"
 
                 # Translation
