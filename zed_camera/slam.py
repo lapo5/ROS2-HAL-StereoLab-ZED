@@ -43,6 +43,8 @@ class SLAM_Zed_Node(Node):
         self.py_translation = sl.Translation()
         self.pose_data = sl.Transform()
 
+        self.do_slam = True
+
         # Acquisition thread
         self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
         self.thread1.start()
@@ -54,43 +56,44 @@ class SLAM_Zed_Node(Node):
     # This function save the current frame in a class attribute
     def get_pose(self):
 
-        if self.zed.grab(self.runtime) == sl.ERROR_CODE.SUCCESS:
-            tracking_state = self.zed.get_position(self.camera_pose)
-            if tracking_state == sl.POSITIONAL_TRACKING_STATE.OK:
-                self.get_logger().info("Publishing Pose")
-                self.rotation = camera_pose.get_rotation_vector()
-                self.translation = camera_pose.get_translation(py_translation)
-                self.pose_data = camera_pose.pose_data(sl.Transform())
+        while self.do_slam:
+            if self.zed.grab(self.runtime) == sl.ERROR_CODE.SUCCESS:
+                tracking_state = self.zed.get_position(self.camera_pose)
+                if tracking_state == sl.POSITIONAL_TRACKING_STATE.OK:
+                    self.get_logger().info("Publishing Pose")
+                    self.rotation = camera_pose.get_rotation_vector()
+                    self.translation = camera_pose.get_translation(py_translation)
+                    self.pose_data = camera_pose.pose_data(sl.Transform())
 
-                msg = PoseStamped()
+                    msg = PoseStamped()
 
-                now = time.time()
-                msg.header = Header()
-                msg.header.stamp.sec = int(now)
-                msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
-                msg.header.frame_id = "zed_cam"
+                    now = time.time()
+                    msg.header = Header()
+                    msg.header.stamp.sec = int(now)
+                    msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
+                    msg.header.frame_id = "zed_cam"
 
-                # Translation
-                msg.pose.position.x = self.translation[0]
-                msg.pose.position.y = self.translation[1]
-                msg.pose.position.z = self.translation[2]
+                    # Translation
+                    msg.pose.position.x = self.translation[0]
+                    msg.pose.position.y = self.translation[1]
+                    msg.pose.position.z = self.translation[2]
 
-                rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
-                quat = rot.as_quat()
+                    rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
+                    quat = rot.as_quat()
 
-                # short-Rodrigues (angle-axis)
-                msg.pose.orientation.x = quat[0]
-                msg.pose.orientation.y = quat[1]
-                msg.pose.orientation.z = quat[2]
-                msg.pose.orientation.w = quat[3]
+                    # short-Rodrigues (angle-axis)
+                    msg.pose.orientation.x = quat[0]
+                    msg.pose.orientation.y = quat[1]
+                    msg.pose.orientation.z = quat[2]
+                    msg.pose.orientation.w = quat[3]
 
-                # Publish the message
-                self.pose_pub.publish(msg)
+                    # Publish the message
+                    self.pose_pub.publish(msg)
+                else:
+                    self.get_logger().info("ERROR POSITIONAL_TRACKING_STATE")
+
             else:
-                self.get_logger().info("ERROR POSITIONAL_TRACKING_STATE")
-
-        else:
-            self.get_logger().info("ERROR ERROR_CODE")
+                self.get_logger().info("ERROR ERROR_CODE")
 
 
     # This function stops/enable the acquisition stream
