@@ -60,20 +60,22 @@ class ZedNode(Node):
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
         self.timer = self.create_timer(0.03, self.publish_frame)
 
+        self.acquire_frame = True
 
 
     # This function save the current frame in a class attribute
     def get_frame(self):
 
-        err = self.cam.grab(self.runtime)
-        if (err == sl.ERROR_CODE.SUCCESS) :
-            self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
-            self.frame_rbga = self.mat.get_data()
-            self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
-            self.get_logger().info("ZED Publishing")
+        while self.acquire_frame:
+            err = self.cam.grab(self.runtime)
+            if (err == sl.ERROR_CODE.SUCCESS) :
+                self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
+                self.frame_rbga = self.mat.get_data()
+                self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
+                self.get_logger().info("ZED Publishing")
 
-        else:
-            self.get_logger().info("ZED ERROR")
+            else:
+                self.get_logger().info("ZED ERROR")
 
 
     # This function stops/enable the acquisition stream
