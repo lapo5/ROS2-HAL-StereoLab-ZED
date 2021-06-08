@@ -47,13 +47,13 @@ class SLAM_Zed_Node(Node):
         self.thread1.start()
 
         # Publishers
-        self.pose_pub = self.create_publisher(Pose, "/zed_camera/pose", 10)
+        self.pose_pub = self.create_publisher(Pose, "/zed_camera/pose")
 
 
     # This function save the current frame in a class attribute
     def get_pose(self):
 
-        if self.zed.grab(runtime) == sl.ERROR_CODE.SUCCESS:
+        if self.zed.grab(self.runtime) == sl.ERROR_CODE.SUCCESS:
             tracking_state = self.zed.get_position(self.camera_pose)
             if tracking_state == sl.POSITIONAL_TRACKING_STATE.OK:
                 self.rotation = camera_pose.get_rotation_vector()
@@ -82,21 +82,6 @@ class SLAM_Zed_Node(Node):
 
                 # Publish the message
                 self.pose_pub.publish(msg)
-
-                t = geometry_msgs.msg.TransformStamped()
-
-                t.header.stamp = self.get_clock().now().to_msg()
-                t.header.frame_id = "world"
-                t.child_frame_id = "Rover_CoM"
-                t.transform.translation.x = msg.pose.position.x
-                t.transform.translation.y = msg.pose.position.y
-                t.transform.translation.z = msg.pose.position.z
-                t.transform.rotation.x = quat[0]
-                t.transform.rotation.y = quat[1]
-                t.transform.rotation.z = quat[2]
-                t.transform.rotation.w = quat[3]
-
-                self.br.sendTransform(t)
 
 
 
