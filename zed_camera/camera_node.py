@@ -71,9 +71,9 @@ class ZedNode(Node):
         static_transformStamped.header.frame_id = "Rover_CoM"
         static_transformStamped.child_frame_id = "ZED_Camera_Base"
 
-        static_transformStamped.transform.translation.x =  0.0
+        static_transformStamped.transform.translation.x =  1.0
         static_transformStamped.transform.translation.y = 0.0
-        static_transformStamped.transform.translation.z = 0.0
+        static_transformStamped.transform.translation.z = 0.5
 
         rot = R.from_euler('zyx', [0.0, 0.0, 0.0], degrees=True)
         quat = rot.as_quat()
