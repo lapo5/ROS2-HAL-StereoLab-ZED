@@ -61,9 +61,9 @@ class SLAM_Zed_Node(Node):
                 tracking_state = self.zed.get_position(self.camera_pose)
                 if tracking_state == sl.POSITIONAL_TRACKING_STATE.OK:
                     self.get_logger().info("Publishing Pose")
-                    self.rotation = camera_pose.get_rotation_vector()
-                    self.translation = camera_pose.get_translation(py_translation)
-                    self.pose_data = camera_pose.pose_data(sl.Transform())
+                    self.rotation = self.camera_pose.get_rotation_vector()
+                    self.translation = self.camera_pose.get_translation(self.py_translation)
+                    self.pose_data = self.camera_pose.pose_data(sl.Transform())
 
                     msg = PoseStamped()
 
