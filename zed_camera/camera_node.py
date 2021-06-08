@@ -52,6 +52,8 @@ class ZedNode(Node):
         self.frame = None
         self.bridge = CvBridge()
 
+        self.acquire_frame = True
+
         # Acquisition thread
         self.thread1 = threading.Thread(target=self.get_frame, daemon=True)
         self.thread1.start()
@@ -60,7 +62,6 @@ class ZedNode(Node):
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
         self.timer = self.create_timer(0.03, self.publish_frame)
 
-        self.acquire_frame = True
 
 
     # This function save the current frame in a class attribute
@@ -72,10 +73,6 @@ class ZedNode(Node):
                 self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
                 self.frame_rbga = self.mat.get_data()
                 self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
-                self.get_logger().info("ZED Publishing")
-
-            else:
-                self.get_logger().info("ZED ERROR")
 
 
     # This function stops/enable the acquisition stream
@@ -90,7 +87,7 @@ class ZedNode(Node):
     # Publisher function
     def publish_frame(self):
 
-        if len(self.frame is None or self.frame) == 0:
+        if self.frame is None or len(self.frame) == 0:
             return
 
         self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
