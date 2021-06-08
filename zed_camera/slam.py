@@ -93,10 +93,9 @@ class SLAM_Zed_Node(Node):
                     # Publish the message
                     self.pose_pub.publish(msg)
 
-
     # This function stops/enable the acquisition stream
     def exit(self):
-	self.do_slam = False
+        self.do_slam = False
         self.thread1.join()
         self.zed.close()
 
