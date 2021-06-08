@@ -4,7 +4,8 @@
 import rclpy
 from rclpy.node import Node
 import cv2
-from sensor_msgs.msg import Image, PoseStamped
+from sensor_msgs.msg import Image
+from geometry_msgs.msg import PoseStamped
 from cv_bridge import CvBridge
 import threading
 
@@ -47,7 +48,7 @@ class SLAM_Zed_Node(Node):
         self.thread1.start()
 
         # Publishers
-        self.pose_pub = self.create_publisher(Pose, "/zed_camera/pose")
+        self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose")
 
 
     # This function save the current frame in a class attribute
