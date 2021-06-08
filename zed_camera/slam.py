@@ -46,14 +46,15 @@ class SLAM_Zed_Node(Node):
         self.py_translation = sl.Translation()
         self.pose_data = sl.Transform()
 
+        # Publishers
+        self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose")
+
         self.do_slam = True
 
         # Acquisition thread
         self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
         self.thread1.start()
 
-        # Publishers
-        self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose")
 
 
     # This function save the current frame in a class attribute
@@ -96,6 +97,7 @@ class SLAM_Zed_Node(Node):
 
     # This function stops/enable the acquisition stream
     def exit(self):
+	self.do_slam = False
         self.zed.close()
         self.thread1.join()
 

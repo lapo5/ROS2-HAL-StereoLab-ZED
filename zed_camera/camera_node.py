@@ -77,7 +77,7 @@ class ZedNode(Node):
 
     # This function stops/enable the acquisition stream
     def exit(self):
-        self.start_acquisition = False
+        self.acquire_frame = False
         self.cam.disable_streaming()
         self.cam.close()
         self.thread1.join()
