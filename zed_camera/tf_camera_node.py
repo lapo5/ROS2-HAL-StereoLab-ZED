@@ -46,7 +46,7 @@ class TFZedNode(Node):
         self.static_broadcaster.sendTransform(static_transformStamped)
 
 
-        self.rotation_camera = np.eye(4, dtype=np.float32)
+        self.rotation_camera = np.eye(3, dtype=np.float32)
         self.rotation_camera[0, 0] = 0.0 
         self.rotation_camera[0, 1] = 0.0
         self.rotation_camera[0, 2] = 1.0 
@@ -70,6 +70,8 @@ class TFZedNode(Node):
 
         rot = R.from_quat([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w])
         
+        print(self.rotation_camera)
+        print(rot)
         world_to_rover = np.matmul(self.rotation_camera, rot)
 
         rot_wTr = R.from_matrix(world_to_rover)
