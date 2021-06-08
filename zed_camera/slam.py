@@ -4,6 +4,7 @@
 import rclpy
 from rclpy.node import Node
 import cv2
+from std_msgs.msg import Header
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import PoseStamped
 from cv_bridge import CvBridge
@@ -11,12 +12,13 @@ import threading
 
 import sys
 import pyzed.sl as sl
+import time
 
 # Class definition of the calibration function
 class SLAM_Zed_Node(Node):
     def __init__(self):
         super().__init__("slam_zed_node")
-        self.get_logger().info("Calibration node is awake...")
+        self.get_logger().info("ZED SLAM node is awake...")
 
         # Class attributes
         self.bridge = CvBridge()
@@ -74,9 +76,9 @@ class SLAM_Zed_Node(Node):
                     msg.header.frame_id = "zed_cam"
 
                     # Translation
-                    msg.pose.position.x = self.translation[0]
-                    msg.pose.position.y = self.translation[1]
-                    msg.pose.position.z = self.translation[2]
+                    msg.pose.position.x = self.translation.get()[0]
+                    msg.pose.position.y = self.translation.get()[1]
+                    msg.pose.position.z = self.translation.get()[2]
 
                     rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
                     quat = rot.as_quat()
@@ -89,11 +91,6 @@ class SLAM_Zed_Node(Node):
 
                     # Publish the message
                     self.pose_pub.publish(msg)
-                else:
-                    self.get_logger().info("ERROR POSITIONAL_TRACKING_STATE")
-
-            else:
-                self.get_logger().info("ERROR ERROR_CODE")
 
 
     # This function stops/enable the acquisition stream
