@@ -5,6 +5,7 @@ import rclpy
 from rclpy.node import Node
 import cv2
 from sensor_msgs.msg import Image
+from std_msgs.msg import Header
 from cv_bridge import CvBridge
 import threading
 
@@ -12,9 +13,8 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 import math
 import sys
-import tf2_ros
 import geometry_msgs
-
+import time
 
 """
     Open the camera and start streaming images using H264 codec
@@ -57,32 +57,9 @@ class ZedNode(Node):
         self.thread1.start()
 
         # Publishers
-        self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame", 10)
+        self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
         self.timer = self.create_timer(0.03, self.publish_frame)
 
-        self.br = tf2_ros.TransformBroadcaster(self)
-
-
-        self.static_broadcaster = tf2_ros.StaticTransformBroadcaster(self)
-
-        static_transformStamped = geometry_msgs.msg.TransformStamped()
-
-        static_transformStamped.header.stamp = self.get_clock().now().to_msg()
-        static_transformStamped.header.frame_id = "Rover_CoM"
-        static_transformStamped.child_frame_id = "ZED_Camera_Base"
-
-        static_transformStamped.transform.translation.x =  1.0
-        static_transformStamped.transform.translation.y = 0.0
-        static_transformStamped.transform.translation.z = 0.5
-
-        rot = R.from_euler('zyx', [0.0, 0.0, 0.0], degrees=True)
-        quat = rot.as_quat()
-        static_transformStamped.transform.rotation.x = quat[0]
-        static_transformStamped.transform.rotation.y = quat[1]
-        static_transformStamped.transform.rotation.z = quat[2]
-        static_transformStamped.transform.rotation.w = quat[3]
-
-        self.static_broadcaster.sendTransform(static_transformStamped)
 
 
     # This function save the current frame in a class attribute
@@ -91,7 +68,12 @@ class ZedNode(Node):
         err = self.cam.grab(self.runtime)
         if (err == sl.ERROR_CODE.SUCCESS) :
             self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
-            self.frame = self.mat.get_data()
+            self.frame_rbga = self.mat.get_data()
+            self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
+            self.get_logger().info("ZED Publishing")
+
+        else:
+            self.get_logger().info("ZED ERROR")
 
 
     # This function stops/enable the acquisition stream
@@ -111,7 +93,10 @@ class ZedNode(Node):
 
         self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
         self.image_message.header = Header()
-        self.image_message.header.stamp = self.get_clock().now().to_msg()
+        now = time.time()
+        self.image_message.header = Header()
+        self.image_message.header.stamp.sec = int(now)
+        self.image_message.header.stamp.nanosec = int(now* 1e9) % 1000000000
         self.image_message.header.frame_id = "ZED_Camera_Base"
         self.frame_pub.publish(self.image_message)
 
