@@ -92,6 +92,10 @@ class SLAM_Zed_Node(Node):
 
                     # Publish the message
                     self.pose_pub.publish(msg)
+                else:
+                    print("Error Pose Tracking State")
+            else:
+                print("Error Main")
 
     # This function stops/enable the acquisition stream
     def exit(self):
