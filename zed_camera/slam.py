@@ -96,6 +96,7 @@ class SLAM_Zed_Node(Node):
                     print("Error Pose Tracking State")
             else:
                 print("Error Main")
+        print("Exiting SLAM")
 
     # This function stops/enable the acquisition stream
     def exit(self):
