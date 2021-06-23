@@ -43,6 +43,7 @@ class SLAM_Zed_Node(Node):
 
         self.camera_info = self.zed.get_camera_information()
 
+        '''
         self.stream = sl.StreamingParameters()
         self.stream.codec = sl.STREAMING_CODEC.H264
         self.stream.bitrate = 4000
@@ -50,6 +51,7 @@ class SLAM_Zed_Node(Node):
         if self.status != sl.ERROR_CODE.SUCCESS:
             print(repr(self.status))
             sys.exit(1)
+        '''
 
         self.py_translation = sl.Translation()
         self.pose_data = sl.Transform()
@@ -63,6 +65,7 @@ class SLAM_Zed_Node(Node):
         self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
         self.thread1.start()
 
+        '''
         self.mat = sl.Mat()
 
         self.frame = None
@@ -78,7 +81,7 @@ class SLAM_Zed_Node(Node):
         # Publishers
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
         self.timer = self.create_timer(0.03, self.publish_frame)
-
+        '''
 
 
 
@@ -121,9 +124,11 @@ class SLAM_Zed_Node(Node):
     # This function stops/enable the acquisition stream
     def exit(self):
         self.do_slam = False
-        self.acquire_frame = False
         self.thread1.join()
-        self.thread2.join()
+
+        #self.acquire_frame = False
+        #self.thread2.join()
+        
         self.zed.close()
 
 
