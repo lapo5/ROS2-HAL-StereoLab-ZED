@@ -23,6 +23,20 @@ class TFZedNode(Node):
         self.get_logger().info("TF ZED camera node is awake...")
         
         self.br = tf2_ros.TransformBroadcaster(self)
+        t = geometry_msgs.msg.TransformStamped()
+        t.header.stamp = self.get_clock().now().to_msg()
+        t.header.frame_id = "world"
+        t.child_frame_id = "Rover_CoM"
+
+        t.transform.translation.x = 0.0
+        t.transform.translation.y = 0.0
+        t.transform.translation.z = 0.0
+        t.transform.rotation.x = 0.0
+        t.transform.rotation.y = 0.0
+        t.transform.rotation.z = 0.0
+        t.transform.rotation.w = 1.0
+
+        self.br.sendTransform(t)
 
         self.static_broadcaster = tf2_ros.StaticTransformBroadcaster(self)
 
