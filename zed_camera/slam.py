@@ -91,6 +91,7 @@ class SLAM_Zed_Node(Node):
                     msg.pose.orientation.w = quat[3]
 
                     # Publish the message
+                    print("Publishing Pose")
                     self.pose_pub.publish(msg)
                 else:
                     print("Error Pose Tracking State")
