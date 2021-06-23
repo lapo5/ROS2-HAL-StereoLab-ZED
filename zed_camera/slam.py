@@ -10,7 +10,6 @@ from geometry_msgs.msg import PoseStamped
 from cv_bridge import CvBridge
 import threading
 
-
 import sys
 import pyzed.sl as sl
 import time
@@ -57,22 +56,6 @@ class SLAM_Zed_Node(Node):
         self.thread1.start()
 
 
-        self.mat = sl.Mat()
-
-        self.frame = None
-        self.bridge = CvBridge()
-
-        self.acquire_frame = True
-
-        # Acquisition thread
-        self.thread2 = threading.Thread(target=self.get_frame, daemon=True)
-        #self.thread2.start()
-
-        # Publishers
-        self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
-        #self.timer = self.create_timer(0.03, self.publish_frame)
-
-
 
     # This function save the current frame in a class attribute
     def get_pose(self):
@@ -115,35 +98,6 @@ class SLAM_Zed_Node(Node):
         self.do_slam = False
         self.thread1.join()
         self.zed.close()
-
-
-
-    # This function save the current frame in a class attribute
-    def get_frame(self):
-
-        while self.acquire_frame:
-            err = self.zed.grab(self.runtime)
-            if (err == sl.ERROR_CODE.SUCCESS) :
-                self.zed.retrieve_image(self.mat, sl.VIEW.LEFT)
-                self.frame_rbga = self.mat.get_data()
-                self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
-
-
-    # Publisher function
-    def publish_frame(self):
-
-        if self.frame is None or len(self.frame) == 0:
-            return
-
-        self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
-        now = time.time()
-        self.image_message.header = Header()
-        self.image_message.header.stamp.sec = int(now)
-        self.image_message.header.stamp.nanosec = int(now* 1e9) % 1000000000
-        self.image_message.header.frame_id = "ZED_Camera_Base"
-        self.frame_pub.publish(self.image_message)
-
-
 
 
 
