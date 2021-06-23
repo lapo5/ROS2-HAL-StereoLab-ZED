@@ -65,8 +65,8 @@ class SLAM_Zed_Node(Node):
         self.acquire_frame = True
 
         # Acquisition thread
-        self.thread1 = threading.Thread(target=self.get_frame, daemon=True)
-        self.thread1.start()
+        self.thread2 = threading.Thread(target=self.get_frame, daemon=True)
+        self.thread2.start()
 
         # Publishers
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
@@ -136,7 +136,6 @@ class SLAM_Zed_Node(Node):
             return
 
         self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
-        self.image_message.header = Header()
         now = time.time()
         self.image_message.header = Header()
         self.image_message.header.stamp.sec = int(now)
