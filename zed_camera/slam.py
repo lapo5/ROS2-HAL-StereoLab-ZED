@@ -66,11 +66,11 @@ class SLAM_Zed_Node(Node):
 
         # Acquisition thread
         self.thread2 = threading.Thread(target=self.get_frame, daemon=True)
-        self.thread2.start()
+        #self.thread2.start()
 
         # Publishers
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
-        self.timer = self.create_timer(0.03, self.publish_frame)
+        #self.timer = self.create_timer(0.03, self.publish_frame)
 
 
 
