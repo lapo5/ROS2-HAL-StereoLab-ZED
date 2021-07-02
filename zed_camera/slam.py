@@ -130,9 +130,9 @@ class SLAM_Zed_Node(Node):
                     odom_msg.header = Header()
                     odom_msg.header.stamp.sec = int(now)
                     odom_msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
-                    odom_msg.header.frame_id = "zed_cam"
+                    odom_msg.header.frame_id = "base_link"
 
-                    odom_msg.child_frame_id = "base_link"
+                    odom_msg.child_frame_id = "zed_cam"
 
                     # Translation
                     odom_msg.pose.pose.position.x = self.translation.get()[0]
