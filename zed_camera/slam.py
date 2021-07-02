@@ -57,7 +57,7 @@ class SLAM_Zed_Node(Node):
         self.pose_data = sl.Transform()
 
         # Publishers
-        self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose")
+        self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose", 0)
 
         self.do_slam = True
 

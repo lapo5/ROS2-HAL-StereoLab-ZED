@@ -26,7 +26,7 @@ class TFZedNode(Node):
         t = geometry_msgs.msg.TransformStamped()
         t.header.stamp = self.get_clock().now().to_msg()
         t.header.frame_id = "world"
-        t.child_frame_id = "Rover_CoM"
+        t.child_frame_id = "base_link"
 
         t.transform.translation.x = 0.0
         t.transform.translation.y = 0.0
@@ -43,7 +43,7 @@ class TFZedNode(Node):
         static_transformStamped = geometry_msgs.msg.TransformStamped()
 
         static_transformStamped.header.stamp = self.get_clock().now().to_msg()
-        static_transformStamped.header.frame_id = "Rover_CoM"
+        static_transformStamped.header.frame_id = "base_link"
         static_transformStamped.child_frame_id = "ZED_Camera_Base"
 
         static_transformStamped.transform.translation.x =  1.0
@@ -80,7 +80,7 @@ class TFZedNode(Node):
 
         t.header.stamp = self.get_clock().now().to_msg()
         t.header.frame_id = "world"
-        t.child_frame_id = "Rover_CoM"
+        t.child_frame_id = "base_link"
 
         rot = R.from_quat([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w])
         
