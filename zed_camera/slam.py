@@ -7,6 +7,7 @@ import cv2
 from std_msgs.msg import Header
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import PoseStamped
+from nav_msgs.msg import Odometry
 from cv_bridge import CvBridge
 import threading
 
@@ -58,6 +59,7 @@ class SLAM_Zed_Node(Node):
 
         # Publishers
         self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose", 0)
+        self.odom_pub = self.create_publisher(Odometry, "/zed_camera/odom", 0)
 
         self.do_slam = True
 
@@ -120,6 +122,41 @@ class SLAM_Zed_Node(Node):
 
                     # Publish the message
                     self.pose_pub.publish(msg)
+
+
+                    odom_msg = Odometry()
+
+                    now = time.time()
+                    odom_msg.header = Header()
+                    odom_msg.header.stamp.sec = int(now)
+                    odom_msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
+                    odom_msg.header.frame_id = "zed_cam"
+
+                    odom_msg.child_frame_id = "base_link"
+
+                    # Translation
+                    odom_msg.pose.pose.position.x = self.translation.get()[0]
+                    odom_msg.pose.pose.position.y = self.translation.get()[1]
+                    odom_msg.pose.pose.position.z = self.translation.get()[2]
+
+                    rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
+                    quat = rot.as_quat()
+
+                    # short-Rodrigues (angle-axis)
+                    odom_msg.pose.pose.orientation.x = quat[0]
+                    odom_msg.pose.pose.orientation.y = quat[1]
+                    odom_msg.pose.pose.orientation.z = quat[2]
+                    odom_msg.pose.pose.orientation.w = quat[3]
+
+                    odom_msg.pose.covariance[0] = 0.1
+                    odom_msg.pose.covariance[7] = 0.1
+                    odom_msg.pose.covariance[14] = 0.1
+                    odom_msg.pose.covariance[21] = 0.1
+                    odom_msg.pose.covariance[28] = 0.1
+                    odom_msg.pose.covariance[35] = 0.1
+
+                    # Publish the message
+                    self.odom_pub.publish(odom_msg)
 
     # This function stops/enable the acquisition stream
     def exit(self):
