@@ -195,7 +195,7 @@ class SLAM_Zed_Node(Node):
         rot_wTr = R.from_matrix(world_to_rover[0:3, 0:3])
         quat = rot.as_quat()
 
-        t = geometry_msgs.msg.TransformStamped()
+        t = TransformStamped()
 
         t.header.stamp = self.get_clock().now().to_msg()
         t.header.frame_id = "world"
