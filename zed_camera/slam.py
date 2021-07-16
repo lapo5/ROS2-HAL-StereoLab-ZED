@@ -136,12 +136,8 @@ class SLAM_Zed_Node(Node):
         msg.pose.pose.position.y = self.translation.get()[1]
         msg.pose.pose.position.z = self.translation.get()[2]
 
-        msg.pose.covariance[0] = self.pose_data.pose_covariance[0]
-        msg.pose.covariance[7] = self.pose_data.pose_covariance[7]
-        msg.pose.covariance[14] = self.pose_data.pose_covariance[14]
-        msg.pose.covariance[21] = self.pose_data.pose_covariance[21]
-        msg.pose.covariance[28] = self.pose_data.pose_covariance[28]
-        msg.pose.covariance[35] = self.pose_data.pose_covariance[35]
+        for i in range(0, 36):
+            msg.pose.covariance[i] = self.pose_data.pose_covariance[i]
 
         rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
         quat = rot.as_quat()
