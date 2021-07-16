@@ -15,6 +15,7 @@ import sys
 import pyzed.sl as sl
 import time
 import tf2_ros
+import geometry_msgs
 from scipy.spatial.transform import Rotation as R
 
 # Class definition of the calibration function
