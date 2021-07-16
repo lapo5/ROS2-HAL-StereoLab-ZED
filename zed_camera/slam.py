@@ -6,7 +6,7 @@ from rclpy.node import Node
 import cv2
 from std_msgs.msg import Header
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, TransformStamped
 from nav_msgs.msg import Odometry
 from cv_bridge import CvBridge
 import threading
@@ -15,7 +15,6 @@ import sys
 import pyzed.sl as sl
 import time
 import tf2_ros
-import geometry_msgs
 from scipy.spatial.transform import Rotation as R
 
 # Class definition of the calibration function
@@ -28,7 +27,7 @@ class SLAM_Zed_Node(Node):
 
         self.static_broadcaster = tf2_ros.StaticTransformBroadcaster(self)
 
-        static_transformStamped = geometry_msgs.msg.TransformStamped()
+        static_transformStamped = TransformStamped()
 
         static_transformStamped.header.stamp = self.get_clock().now().to_msg()
         static_transformStamped.header.frame_id = "base_link"
