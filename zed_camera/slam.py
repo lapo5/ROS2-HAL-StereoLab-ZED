@@ -23,7 +23,6 @@ class SLAM_Zed_Node(Node):
         self.get_logger().info("ZED SLAM node is awake...")
 
         self.br = tf2_ros.TransformBroadcaster(self)
-s
 
         self.static_broadcaster = tf2_ros.StaticTransformBroadcaster(self)
 
@@ -105,9 +104,9 @@ s
                     self.translation = self.camera_pose.get_translation(self.py_translation)
                     self.pose_data = self.camera_pose.pose_data(sl.Transform())
 
-                    publish_pose_data()
+                    self.publish_pose_data()
 
-                    publish_odom_data()
+                    self.publish_odom_data()
 
 
     def publish_odom_data(self):
