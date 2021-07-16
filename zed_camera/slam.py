@@ -113,7 +113,7 @@ class SLAM_Zed_Node(Node):
                 if tracking_state == sl.POSITIONAL_TRACKING_STATE.OK:
                     self.rotation = self.camera_pose.get_rotation_vector()
                     self.translation = self.camera_pose.get_translation(self.py_translation)
-                    self.pose_data = self.camera_pose.pose_data(sl.Transform())
+                    self.pose_data = sl.Pose()
 
                     self.publish_pose_data()
 
