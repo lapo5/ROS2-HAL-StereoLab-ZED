@@ -14,6 +14,7 @@ import threading
 import sys
 import pyzed.sl as sl
 import time
+import numpy as np
 import tf2_ros
 from scipy.spatial.transform import Rotation as R
 
