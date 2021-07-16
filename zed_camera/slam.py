@@ -11,6 +11,9 @@ from nav_msgs.msg import Odometry
 from cv_bridge import CvBridge
 import threading
 
+from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
+from rclpy.qos import QoSProfile
+
 import sys
 import pyzed.sl as sl
 import time
@@ -83,9 +86,15 @@ class SLAM_Zed_Node(Node):
         self.py_translation = sl.Translation()
         self.pose_data = sl.Transform()
 
+
+        qos_profile = QoSProfile(depth=10)
+        qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
+        qos_profile.history = QoSHistoryPolicy.KEEP_LAST
+
+
         # Publishers
-        self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose")
-        self.odom_pub = self.create_publisher(Odometry, "/zed_camera/odom")
+        self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose", qos_profile)
+        self.odom_pub = self.create_publisher(Odometry, "/zed_camera/odom", qos_profile)
 
         self.do_slam = True
 
