@@ -128,7 +128,8 @@ class SLAM_Zed_Node(Node):
         msg.header = Header()
         msg.header.stamp.sec = int(now)
         msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
-        msg.header.child_frame_id = "zed_link"
+        msg.header.frame_id = "zed_link"
+        msg.child_frame_id = "base_link"
 
         # Translation
         msg.pose.pose.position.x = self.translation.get()[0]
