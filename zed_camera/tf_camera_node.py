@@ -113,9 +113,9 @@ def main(args=None):
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        print('server stopped cleanly')
+        print('TF Zed Camera Node stopped cleanly')
     except BaseException:
-        print('exception in server:', file=sys.stderr)
+        print('Exception in TF Zed Camera Node:', file=sys.stderr)
         raise
     finally:
         # Destroy the node explicitly
