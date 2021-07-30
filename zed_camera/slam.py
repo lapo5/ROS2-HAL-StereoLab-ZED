@@ -29,27 +29,6 @@ class SLAM_Zed_Node(Node):
 
         self.br = tf2_ros.TransformBroadcaster(self)
 
-        self.static_broadcaster = tf2_ros.StaticTransformBroadcaster(self)
-
-        static_transformStamped = TransformStamped()
-
-        static_transformStamped.header.stamp = self.get_clock().now().to_msg()
-        static_transformStamped.header.frame_id = "base_link"
-        static_transformStamped.child_frame_id = "zed_link"
-
-        static_transformStamped.transform.translation.x =  1.0
-        static_transformStamped.transform.translation.y = 0.0
-        static_transformStamped.transform.translation.z = 0.5
-
-        rot = R.from_euler('zyx', [0.0, 0.0, 0.0], degrees=True)
-        quat = rot.as_quat()
-        static_transformStamped.transform.rotation.x = quat[0]
-        static_transformStamped.transform.rotation.y = quat[1]
-        static_transformStamped.transform.rotation.z = quat[2]
-        static_transformStamped.transform.rotation.w = quat[3]
-
-        self.static_broadcaster.sendTransform(static_transformStamped)
-
         self.rotation_camera = np.eye(4, dtype=np.float32)
         self.rotation_camera[0, 0] = 0.0 
         self.rotation_camera[0, 1] = 0.0
