@@ -8,6 +8,7 @@ from std_msgs.msg import Header
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import PoseStamped, TransformStamped
 from nav_msgs.msg import Odometry
+from std_srvs.srv import Empty
 from cv_bridge import CvBridge
 import threading
 
@@ -81,6 +82,15 @@ class SLAM_Zed_Node(Node):
         self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
         self.thread1.start()
 
+	# Service: stop acquisition
+	self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
+
+
+
+    # This function stops/enable the acquisition stream
+    def acquisition_service(self, request, response):
+        self.do_slam = False
+        return response
 
 
     # This function save the current frame in a class attribute
