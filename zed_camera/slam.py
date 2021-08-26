@@ -82,7 +82,7 @@ class SLAM_Zed_Node(Node):
         self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
         self.thread1.start()
 
-    	# Service: stop acquisition
+        # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
 
 
