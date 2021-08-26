@@ -136,6 +136,11 @@ class SLAM_Zed_Node(Node):
         msg.pose.pose.orientation.y = quat[1]
         msg.pose.pose.orientation.z = quat[2]
         msg.pose.pose.orientation.w = quat[3]
+        
+        # way to get robot_pose_ekf to ignore it is to inflate its variance to a very large value 
+        # (on the order of 1e3) so that the variable in question is effectively ignored.
+        for i in range(0, 36):
+        	msg.twist.covariance[i] = 1e3
 
         # Publish the message
         self.odom_pub.publish(msg)
