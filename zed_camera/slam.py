@@ -82,13 +82,13 @@ class SLAM_Zed_Node(Node):
         self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
         self.thread1.start()
 
-	# Service: stop acquisition
-	self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
+    	# Service: stop acquisition
+        self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
 
 
 
     # This function stops/enable the acquisition stream
-    def acquisition_service(self, request, response):
+    def stop_slam(self, request, response):
         self.do_slam = False
         return response
 
