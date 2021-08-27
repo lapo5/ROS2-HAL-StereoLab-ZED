@@ -93,6 +93,12 @@ class SLAM_Zed_Node(Node):
     # This function stops/enable the acquisition stream
     def stop_slam(self, request, response):
         self.do_slam = False
+        self.thread1.join()
+        
+        self.zed.close()
+
+        self.destroy_node()
+        
         return response
 
 
