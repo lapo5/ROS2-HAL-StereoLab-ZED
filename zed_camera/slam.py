@@ -97,6 +97,9 @@ class SLAM_Zed_Node(Node):
         
         self.zed.close()
 
+        self.exit()
+        self.destroy_node()
+
         return response
 
     # This function save the current frame in a class attribute
@@ -208,9 +211,6 @@ class SLAM_Zed_Node(Node):
         self.do_slam = False
         self.thread1.join()
         self.zed.close()
-
-        self.exit()
-        self.destroy_node()
 
 # Main loop function
 def main(args=None):
