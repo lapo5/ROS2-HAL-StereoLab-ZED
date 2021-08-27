@@ -55,10 +55,10 @@ class SLAM_Zed_Node(Node):
             print(repr(status))
             sys.exit(1)
 
-        self.tracking_params = sl.PositionalTrackingParameters( enable_memory_=False, 
-                                                                enable_pose_smoothing_=True, 
-                                                                enable_imu_fusion_=False)
-        
+        self.tracking_params = sl.PositionalTrackingParameters( _enable_memory=False, 
+                                                                _enable_pose_smoothing=True, 
+                                                                _enable_imu_fusion=False)
+
         self.zed.enable_positional_tracking(self.tracking_params)
 
         self.runtime = sl.RuntimeParameters()
