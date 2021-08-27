@@ -210,7 +210,12 @@ class SLAM_Zed_Node(Node):
         
         self.zed.close()
 
-        self.exit()
+        try:
+            self.exit()
+            self.destroy_node()
+            rclpy.shutdown()
+        except:
+            pass
 
 # Main loop function
 def main(args=None):
