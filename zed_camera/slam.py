@@ -230,7 +230,7 @@ def main(args=None):
         # (optional - Done automatically when node is garbage collected)
         #node.destroy_node()
         #rclpy.shutdown()
-
+        pass
 
 # Main
 if __name__ == '__main__':
