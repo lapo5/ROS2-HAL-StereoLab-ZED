@@ -123,7 +123,7 @@ class SLAM_Zed_Node(Node):
         msg.header.stamp.sec = int(now)
         msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
         msg.header.frame_id = "odom"
-        msg.child_frame_id = "base_link"
+        msg.child_frame_id = "zed_link"
 
         rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
         quat = rot.as_quat()
