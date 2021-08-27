@@ -33,8 +33,8 @@ class SLAM_Zed_Node(Node):
         self.rotation_camera = np.eye(4, dtype=np.float32)
         self.rotation_camera[0, 0] = 0.0 
         self.rotation_camera[0, 1] = 0.0
-        self.rotation_camera[0, 2] = 1.0 
-        self.rotation_camera[1, 0] = 1.0
+        self.rotation_camera[0, 2] = -1.0 
+        self.rotation_camera[1, 0] = -1.0
         self.rotation_camera[1, 1] = 0.0 
         self.rotation_camera[1, 2] = 0.0
         self.rotation_camera[2, 0] = 0.0
