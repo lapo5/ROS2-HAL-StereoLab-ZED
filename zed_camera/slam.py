@@ -71,7 +71,7 @@ class SLAM_Zed_Node(Node):
 
 
         qos_profile = QoSProfile(depth=10)
-        qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
+        qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
         qos_profile.history = QoSHistoryPolicy.KEEP_LAST
 
 
