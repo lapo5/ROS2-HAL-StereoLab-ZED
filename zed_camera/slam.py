@@ -210,6 +210,8 @@ class SLAM_Zed_Node(Node):
         
         self.zed.close()
 
+        self.exit()
+
 # Main loop function
 def main(args=None):
 
