@@ -120,7 +120,7 @@ class SLAM_Zed_Node(Node):
         msg.header = Header()
         msg.header.stamp.sec = int(now)
         msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
-        msg.header.frame_id = "zed_link"
+        msg.header.frame_id = "zed_odom"
         msg.child_frame_id = "base_link"
 
         # Translation
@@ -192,7 +192,7 @@ class SLAM_Zed_Node(Node):
         t = TransformStamped()
 
         t.header.stamp = self.get_clock().now().to_msg()
-        t.header.frame_id = "world"
+        t.header.frame_id = "zed_odom"
         t.child_frame_id = "zed_link"
 
         t.transform.translation.x = float(world_to_rover[0, 3])
