@@ -97,8 +97,7 @@ class SLAM_Zed_Node(Node):
         
         self.zed.close()
 
-        self.destroy_node()
-
+        return response
 
     # This function save the current frame in a class attribute
     def get_pose(self):
