@@ -228,8 +228,8 @@ def main(args=None):
     finally:
         # Destroy the node explicitly
         # (optional - Done automatically when node is garbage collected)
-        node.destroy_node()
-        rclpy.shutdown()
+        #node.destroy_node()
+        #rclpy.shutdown()
 
 
 # Main
