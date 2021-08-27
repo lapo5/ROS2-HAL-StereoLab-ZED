@@ -80,7 +80,7 @@ class SLAM_Zed_Node(Node):
         self.odom_pub = self.create_publisher(Odometry, "/zed_camera/odom", qos_profile)
 
         self.do_slam = True
-        self.self.enable_publish_pose_data = False
+        self.enable_publish_pose_data = False
 
         # Acquisition thread
         self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
