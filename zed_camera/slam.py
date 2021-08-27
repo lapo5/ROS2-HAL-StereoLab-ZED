@@ -147,8 +147,8 @@ class SLAM_Zed_Node(Node):
         for i in range(0, 36):
             msg.pose.covariance[i] = self.pose_data.pose_covariance[i]
 
-        for i in range(0, 36):
-            msg.twist.covariance[i] = 1e3
+        for i in range(0, 6):
+            msg.twist.covariance[i * 7] = 1e3
 
         # short-Rodrigues (angle-axis)
         msg.pose.pose.orientation.x = quat[0]
