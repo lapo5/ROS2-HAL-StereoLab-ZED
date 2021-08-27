@@ -89,9 +89,6 @@ class ZedNode(Node):
     # This function stops/enable the acquisition stream
     def exit(self):
         self.acquire_frame = False
-        self.thread1.join()
-        self.cam.disable_streaming()
-        self.cam.close()
 
 
 
@@ -118,7 +115,8 @@ def main(args=None):
     rclpy.init(args=args)
     node = ZedNode()
     try:
-        rclpy.spin(node)
+        while node.acquire_frame:
+            rclpy.spin(node)
     except KeyboardInterrupt:
         print('ZED Camera Node stopped cleanly')
         node.exit()
@@ -128,6 +126,10 @@ def main(args=None):
     finally:
         # Destroy the node explicitly
         # (optional - Done automatically when node is garbage collected)
+        
+        node.thread1.join()
+        node.cam.disable_streaming()
+        node.cam.close()
         node.destroy_node()
         rclpy.shutdown()
 
