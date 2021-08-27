@@ -93,12 +93,6 @@ class SLAM_Zed_Node(Node):
     # This function stops/enable the acquisition stream
     def stop_slam(self, request, response):
         self.do_slam = False
-        self.thread1.join()
-        
-        self.zed.close()
-
-        self.exit()
-        self.destroy_node()
 
         return response
 
@@ -209,8 +203,6 @@ class SLAM_Zed_Node(Node):
     # This function stops/enable the acquisition stream
     def exit(self):
         self.do_slam = False
-        self.thread1.join()
-        self.zed.close()
 
 # Main loop function
 def main(args=None):
@@ -218,21 +210,21 @@ def main(args=None):
     rclpy.init(args=args)
     node = SLAM_Zed_Node()
     try:
-        rclpy.spin(node)
+        while node.do_slam:
+            rclpy.spin_once(node)
     except KeyboardInterrupt:
         print('ZED SLAM Node stopped cleanly')
         node.exit()
     except BaseException:
         print('Exception in ZED SLAM Node:', file=sys.stderr)
         raise
-    except Exception:
-        pass
     finally:
         # Destroy the node explicitly
         # (optional - Done automatically when node is garbage collected)
-        #node.destroy_node()
-        #rclpy.shutdown()
-        pass
+        node.thread1.join()
+        node.zed.close()
+        node.destroy_node()
+        rclpy.shutdown()
         
 # Main
 if __name__ == '__main__':
