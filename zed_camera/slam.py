@@ -31,15 +31,15 @@ class SLAM_Zed_Node(Node):
         self.br = tf2_ros.TransformBroadcaster(self)
 
         self.rotation_camera = np.eye(4, dtype=np.float32)
-        self.rotation_camera[0, 0] = 0.0 
+        self.rotation_camera[0, 0] = 1.0 
         self.rotation_camera[0, 1] = 0.0
-        self.rotation_camera[0, 2] = -1.0 
-        self.rotation_camera[1, 0] = -1.0
-        self.rotation_camera[1, 1] = 0.0 
+        self.rotation_camera[0, 2] = 0.0
+        self.rotation_camera[1, 0] = 0.0
+        self.rotation_camera[1, 1] = 1.0 
         self.rotation_camera[1, 2] = 0.0
         self.rotation_camera[2, 0] = 0.0
-        self.rotation_camera[2, 1] = 1.0
-        self.rotation_camera[2, 2] = 0.0 
+        self.rotation_camera[2, 1] = 0.0
+        self.rotation_camera[2, 2] = 1.0 
 
         # Class attributes
         self.bridge = CvBridge()
@@ -47,7 +47,7 @@ class SLAM_Zed_Node(Node):
 
         self.init_params = sl.InitParameters(camera_resolution=sl.RESOLUTION.HD720,
                              coordinate_units=sl.UNIT.METER,
-                             coordinate_system=sl.COORDINATE_SYSTEM.RIGHT_HANDED_Y_UP)
+                             coordinate_system=sl.COORDINATE_SYSTEM.RIGHT_HANDED_Z_UP)
          
         self.zed = sl.Camera()
         status = self.zed.open(self.init_params)
