@@ -122,7 +122,7 @@ class SLAM_Zed_Node(Node):
         msg.header = Header()
         msg.header.stamp.sec = int(now)
         msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
-        msg.header.frame_id = "zed_odom"
+        msg.header.frame_id = "odom"
         msg.child_frame_id = "base_link"
 
         # Translation
