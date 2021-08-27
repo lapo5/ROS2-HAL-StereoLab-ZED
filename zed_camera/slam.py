@@ -55,9 +55,9 @@ class SLAM_Zed_Node(Node):
             print(repr(status))
             sys.exit(1)
 
-        self.tracking_params = sl.PositionalTrackingParameters( _enable_memory=False, 
-                                                                _enable_pose_smoothing=True, 
-                                                                _enable_imu_fusion=False)
+        self.tracking_params = sl.PositionalTrackingParameters( _enable_memory=True, 
+                                                                _enable_pose_smoothing=False, 
+                                                                _enable_imu_fusion=True)
 
         self.zed.enable_positional_tracking(self.tracking_params)
 
@@ -125,16 +125,30 @@ class SLAM_Zed_Node(Node):
         msg.header.frame_id = "odom"
         msg.child_frame_id = "base_link"
 
+        rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
+        quat = rot.as_quat()
+
+        cam_sight = np.eye(4, dtype=np.float32)
+        cam_sight[0:3, 0:3] = rot.as_matrix()
+        cam_sight[0, 3] = self.translation.get()[0]
+        cam_sight[1, 3] = self.translation.get()[1]
+        cam_sight[2, 3] = self.translation.get()[2]
+
+        world_to_rover = np.matmul(self.rotation_camera, cam_sight)
+
+        rot_wTr = R.from_matrix(world_to_rover[0:3, 0:3])
+        quat = rot.as_quat()
+
         # Translation
-        msg.pose.pose.position.x = self.translation.get()[0]
-        msg.pose.pose.position.y = self.translation.get()[1]
-        msg.pose.pose.position.z = self.translation.get()[2]
+        msg.pose.pose.position.x = float(world_to_rover[0, 3])
+        msg.pose.pose.position.y = float(world_to_rover[1, 3])
+        msg.pose.pose.position.z = float(world_to_rover[2, 3])
 
         for i in range(0, 36):
             msg.pose.covariance[i] = self.pose_data.pose_covariance[i]
 
-        rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
-        quat = rot.as_quat()
+        for i in range(0, 36):
+            msg.twist.covariance[i] = 1e3
 
         # short-Rodrigues (angle-axis)
         msg.pose.pose.orientation.x = quat[0]
