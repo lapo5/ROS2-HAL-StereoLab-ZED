@@ -85,8 +85,8 @@ class SLAM_Zed_Node(Node):
         self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
         self.thread1.start()
 
-        # Service: stop acquisition
-        self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
+	# Service: stop acquisition
+	self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
 
 
 
@@ -139,11 +139,6 @@ class SLAM_Zed_Node(Node):
         msg.pose.pose.orientation.y = quat[1]
         msg.pose.pose.orientation.z = quat[2]
         msg.pose.pose.orientation.w = quat[3]
-        
-        # way to get robot_pose_ekf to ignore it is to inflate its variance to a very large value 
-        # (on the order of 1e3) so that the variable in question is effectively ignored.
-        for i in range(0, 36):
-        	msg.twist.covariance[i] = 1e3
 
         # Publish the message
         self.odom_pub.publish(msg)
@@ -209,41 +204,8 @@ class SLAM_Zed_Node(Node):
     def exit(self):
         self.do_slam = False
         self.thread1.join()
-
-        #self.acquire_frame = False
-        #self.thread2.join()
         
         self.zed.close()
-
-
-
-    # This function save the current frame in a class attribute
-    def get_frame(self):
-
-        while self.acquire_frame:
-            err = self.zed.grab(self.runtime)
-            if (err == sl.ERROR_CODE.SUCCESS) :
-                self.zed.retrieve_image(self.mat, sl.VIEW.LEFT)
-                self.frame_rbga = self.mat.get_data()
-                self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
-
-
-
-    # Publisher function
-    def publish_frame(self):
-
-        if self.frame is None or len(self.frame) == 0:
-            return
-
-        self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
-        self.image_message.header = Header()
-        now = time.time()
-        self.image_message.header = Header()
-        self.image_message.header.stamp.sec = int(now)
-        self.image_message.header.stamp.nanosec = int(now* 1e9) % 1000000000
-        self.image_message.header.frame_id = "ZED_Camera_Base"
-        self.frame_pub.publish(self.image_message)
-
 
 # Main loop function
 def main(args=None):
