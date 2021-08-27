@@ -225,13 +225,14 @@ def main(args=None):
     except BaseException:
         print('Exception in ZED SLAM Node:', file=sys.stderr)
         raise
+    except:
+        pass
     finally:
         # Destroy the node explicitly
         # (optional - Done automatically when node is garbage collected)
-        #node.destroy_node()
-        #rclpy.shutdown()
-        pass
-
+        node.destroy_node()
+        rclpy.shutdown()
+        
 # Main
 if __name__ == '__main__':
     main()
