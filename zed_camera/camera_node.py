@@ -6,6 +6,7 @@ from rclpy.node import Node
 import cv2
 from sensor_msgs.msg import Image
 from std_msgs.msg import Header
+from std_srvs.srv import Empty
 from cv_bridge import CvBridge
 import threading
 
@@ -61,6 +62,16 @@ class ZedNode(Node):
         # Publishers
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
         self.timer = self.create_timer(0.03, self.publish_frame)
+
+        # Service: stop acquisition
+        self.stop_service = self.create_service(Empty, "/zed_camera/stop_video_feed", self.stop_video_feed)
+
+
+
+    # This function stops/enable the acquisition stream
+    def stop_video_feed(self, request, response):
+        self.acquire_frame = False
+        return response
 
 
 
