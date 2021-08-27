@@ -144,11 +144,8 @@ class SLAM_Zed_Node(Node):
         msg.pose.pose.position.y = float(world_to_rover[1, 3])
         msg.pose.pose.position.z = float(world_to_rover[2, 3])
 
-        for i in range(0, 6):
-            msg.pose.covariance[i * 7] = 1.0
-        
-        #for i in range(0, 36):
-        #    msg.pose.covariance[i] = self.pose_data.pose_covariance[i]
+        for i in range(0, 36):
+            msg.pose.covariance[i] = self.pose_data.pose_covariance[i]
 
         for i in range(0, 6):
             msg.twist.covariance[i * 7] = 1e3
