@@ -207,15 +207,10 @@ class SLAM_Zed_Node(Node):
     def exit(self):
         self.do_slam = False
         self.thread1.join()
-        
         self.zed.close()
 
-        try:
-            self.exit()
-            self.destroy_node()
-            rclpy.shutdown()
-        except:
-            pass
+        self.exit()
+        self.destroy_node()
 
 # Main loop function
 def main(args=None):
