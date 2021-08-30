@@ -142,16 +142,16 @@ class SLAM_Zed_Node(Node):
                     self.translation = self.camera_pose.get_translation(self.py_translation)
                     self.pose_data = sl.Pose()
 
-                    if self.ts_handler.is_new(self.sensors_data.get_imu_data()):
-                        self.quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
-                        print("IMU Orientation: {}".format(self.quaternion))
-                        self.linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
-                        print("IMU Acceleration: {} [m/sec^2]".format(self.linear_acceleration))
-                        self.angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
-                        print("IMU Angular Velocity: {} [deg/sec]".format(self.angular_velocity))
+                    self.sensors_data.get_imu_data()
+                    self.quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
+                    print("IMU Orientation: {}".format(self.quaternion))
+                    self.linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
+                    print("IMU Acceleration: {} [m/sec^2]".format(self.linear_acceleration))
+                    self.angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
+                    print("IMU Angular Velocity: {} [deg/sec]".format(self.angular_velocity))
 
-                        if self.enable_publish_imu:
-                            self.publish_imu_data()
+                    if self.enable_publish_imu:
+                        self.publish_imu_data()
 
 
                     if self.enable_publish_pose_data:
