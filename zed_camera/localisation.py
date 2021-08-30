@@ -148,12 +148,12 @@ class SLAM_Zed_Node(Node):
 
                     self.publish_odom_data()
                 else: 
-                    print("Error in Tracking State: {0}".format(tracking_state))
+                    print("Tracking State: {0}".format(tracking_state))
                     
             else: 
                 print("Error in grab zed")
 
-            if False and self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
+            if self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
                 # Check if the data has been updated since the last time
                 # IMU is the sensor with the highest rate
                 if self.ts_handler.is_new(self.sensors_data.get_imu_data()):
@@ -162,8 +162,8 @@ class SLAM_Zed_Node(Node):
                     self.imu_linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
                     self.imu_angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
                 
-                    #if self.enable_publish_imu:
-                    #    self.publish_imu_data()
+                    if self.enable_publish_imu:
+                        self.publish_imu_data()
 
 
     def publish_imu_data(self):
