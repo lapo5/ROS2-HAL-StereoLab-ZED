@@ -14,7 +14,7 @@ def generate_launch_description():
     return LaunchDescription([
         
         ExecuteProcess(
-            cmd=['bash', os.path.join(get_package_share_directory("zed_camera"), 'scripts', 'start_slam_remotely.sh')],
+            cmd=['bash', os.path.join(get_package_share_directory("zed_camera"), 'scripts', 'start_localisation_remotely.sh')],
             output='screen',
         ),
 ])

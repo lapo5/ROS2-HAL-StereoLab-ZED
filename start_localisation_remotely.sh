@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPT="source /opt/ros/eloquent/setup.bash; source /home/roxy-jetson/ros2_ws/install/setup.bash; ros2 run zed_camera slam"
+SCRIPT="source /opt/ros/eloquent/setup.bash; source /home/roxy-jetson/ros2_ws/install/setup.bash; ros2 run zed_camera localisation"
 HOST="192.168.1.40"
 USERNAME="roxy"
 PASSWORD="roxy"
