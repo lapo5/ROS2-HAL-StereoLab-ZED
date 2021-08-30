@@ -92,8 +92,7 @@ class SLAM_Zed_Node(Node):
 
         self.init_params = sl.InitParameters(camera_resolution=sl.RESOLUTION.HD720,
                              coordinate_units=sl.UNIT.METER,
-                             coordinate_system=sl.COORDINATE_SYSTEM.RIGHT_HANDED_Z_UP,
-                             depth_mode=sl.DEPTH_MODE.NONE)
+                             coordinate_system=sl.COORDINATE_SYSTEM.RIGHT_HANDED_Z_UP)
          
         self.zed = sl.Camera()
         status = self.zed.open(self.init_params)
@@ -184,7 +183,7 @@ class SLAM_Zed_Node(Node):
 
                     self.publish_odom_data()
                 else: 
-                    print("Error in Tracking State")
+                    print("Error in Tracking State: {0}".format(tracking_state))
 
             else: 
                 print("Error in grab zed")
