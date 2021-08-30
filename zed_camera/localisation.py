@@ -149,9 +149,7 @@ class SLAM_Zed_Node(Node):
                     self.publish_odom_data()
                 else: 
                     print("Error in Tracking State: {0}".format(tracking_state))
-                    print("Tracking State TRACKING_STATE::SEARCHING: {0}".format(sl.POSITIONAL_TRACKING_STATE::SEARCHING))
-                    print("Tracking State TRACKING_STATE::FPS_TOO_LOW: {0}".format(sl.POSITIONAL_TRACKING_STATE::FPS_TOO_LOW))
-
+                    
             else: 
                 print("Error in grab zed")
 
