@@ -187,7 +187,7 @@ class SLAM_Zed_Node(Node):
             if self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
                 # Check if the data has been updated since the last time
                 # IMU is the sensor with the highest rate
-                if ts_handler.is_new(self.sensors_data.get_imu_data()):
+                if self.ts_handler.is_new(self.sensors_data.get_imu_data()):
                     self.sensors_data.get_imu_data()
                     self.imu_quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
                     self.imu_linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
