@@ -193,8 +193,8 @@ class SLAM_Zed_Node(Node):
                     self.imu_linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
                     self.imu_angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
                 
-                    if self.enable_publish_imu:
-                        self.publish_imu_data()
+                    #if self.enable_publish_imu:
+                    #    self.publish_imu_data()
 
 
     def publish_imu_data(self):
