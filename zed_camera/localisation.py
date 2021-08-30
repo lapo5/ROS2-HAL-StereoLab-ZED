@@ -143,13 +143,10 @@ class SLAM_Zed_Node(Node):
                     self.pose_data = sl.Pose()
 
                     self.sensors_data.get_imu_data()
-                    self.quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
-                    print("IMU Orientation: {}".format(self.quaternion))
-                    self.linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
-                    print("IMU Acceleration: {} [m/sec^2]".format(self.linear_acceleration))
-                    self.angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
-                    print("IMU Angular Velocity: {} [deg/sec]".format(self.angular_velocity))
-
+                    self.imu_quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
+                    self.imu_linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
+                    self.imu_angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
+                
                     if self.enable_publish_imu:
                         self.publish_imu_data()
 
@@ -168,30 +165,30 @@ class SLAM_Zed_Node(Node):
 
         msg.header.frame_id = "zed_link"
 
-        msg.orientation.x = 0.0
-        msg.orientation.y = 0.0
-        msg.orientation.z = 0.0
-        msg.orientation.w = 0.0
+        msg.orientation.x = self.imu_quaternion[0]
+        msg.orientation.y = self.imu_quaternion[1]
+        msg.orientation.z = self.imu_quaternion[2]
+        msg.orientation.w = self.imu_quaternion[3]
 
-        msg.orientation_covariance[0] = 1e3
-        msg.orientation_covariance[4] = 1e3
-        msg.orientation_covariance[8] = 1e3
+        msg.orientation_covariance[0] = 0.1
+        msg.orientation_covariance[4] = 0.1
+        msg.orientation_covariance[8] = 0.1
 
-        msg.angular_velocity.x = float(self.rotvel[0])
-        msg.angular_velocity.y = float(self.rotvel[1])
-        msg.angular_velocity.z = float(self.rotvel[2])
+        msg.angular_velocity.x = float(self.imu_angular_velocity[0])
+        msg.angular_velocity.y = float(self.imu_angular_velocity[1])
+        msg.angular_velocity.z = float(self.imu_angular_velocity[2])
 
-        msg.angular_velocity_covariance[0] = 0.0004
-        msg.angular_velocity_covariance[4] = 0.0004
-        msg.angular_velocity_covariance[8] = 0.0004
+        msg.angular_velocity_covariance[0] = 0.04
+        msg.angular_velocity_covariance[4] = 0.04
+        msg.angular_velocity_covariance[8] = 0.04
 
-        msg.linear_acceleration.x = float(self.linacc[0])
-        msg.linear_acceleration.y = float(self.linacc[1])
-        msg.linear_acceleration.z = float(self.linacc[2])
+        msg.linear_acceleration.x = float(self.imu_linear_acceleration[0])
+        msg.linear_acceleration.y = float(self.imu_linear_acceleration[1])
+        msg.linear_acceleration.z = float(self.imu_linear_acceleration[2])
 
-        msg.linear_acceleration_covariance[0] = 0.0004
-        msg.linear_acceleration_covariance[4] = 0.0004
-        msg.linear_acceleration_covariance[8] = 0.0004
+        msg.linear_acceleration_covariance[0] = 0.04
+        msg.linear_acceleration_covariance[4] = 0.04
+        msg.linear_acceleration_covariance[8] = 0.04
 
         self.imu_pub.publish(msg)
 
