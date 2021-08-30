@@ -193,10 +193,6 @@ class SLAM_Zed_Node(Node):
                     self.imu_linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
                     self.imu_angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
                 
-                    print(" \t Orientation: [ Ox: {0}, Oy: {1}, Oz {2}, Ow: {3} ]".format(self.imu_quaternion[0], self.imu_quaternion[1], self.imu_quaternion[2], self.imu_quaternion[3]))
-                    print(" \t Angular Velocities: [ {0} {1} {2} ] [deg/sec]".format(self.imu_angular_velocity[0], self.imu_angular_velocity[1], self.imu_angular_velocity[2]))
-                    print(" \t Acceleration: [ {0} {1} {2} ] [m/sec^2]".format(self.imu_linear_acceleration[0], self.imu_linear_acceleration[1], self.imu_linear_acceleration[2]))
-
                     if self.enable_publish_imu:
                         self.publish_imu_data()
 
