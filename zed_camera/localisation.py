@@ -111,7 +111,7 @@ class SLAM_Zed_Node(Node):
 
         self.enable_publish_imu = True
         self.ts_handler = TimestampHandler()
-        self.sensor_data = sl.SensorsData()
+        self.sensors_data = sl.SensorsData()
 
         self.do_slam = True
         self.enable_publish_pose_data = False
