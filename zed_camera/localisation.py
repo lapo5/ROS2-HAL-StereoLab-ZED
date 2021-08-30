@@ -142,19 +142,27 @@ class SLAM_Zed_Node(Node):
                     self.translation = self.camera_pose.get_translation(self.py_translation)
                     self.pose_data = sl.Pose()
 
+                    if self.enable_publish_pose_data:
+                        self.publish_pose_data()
+
+                    self.publish_odom_data()
+
+            if self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
+                # Check if the data has been updated since the last time
+                # IMU is the sensor with the highest rate
+                if ts_handler.is_new(self.sensors_data.get_imu_data()):
                     self.sensors_data.get_imu_data()
                     self.imu_quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
                     self.imu_linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
                     self.imu_angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
                 
+                    print(" \t Orientation: [ Ox: {0}, Oy: {1}, Oz {2}, Ow: {3} ]".format(self.imu_quaternion[0], self.imu_quaternion[1], self.imu_quaternion[2], self.imu_quaternion[3]))
+                    print(" \t Angular Velocities: [ {0} {1} {2} ] [deg/sec]".format(self.imu_angular_velocity[0], self.imu_angular_velocity[1], self.imu_angular_velocity[2]))
+                    print(" \t Acceleration: [ {0} {1} {2} ] [m/sec^2]".format(self.imu_linear_acceleration[0], self.imu_linear_acceleration[1], self.imu_linear_acceleration[2]))
+
                     if self.enable_publish_imu:
                         self.publish_imu_data()
 
-
-                    if self.enable_publish_pose_data:
-                        self.publish_pose_data()
-
-                    self.publish_odom_data()
 
     def publish_imu_data(self):
 
