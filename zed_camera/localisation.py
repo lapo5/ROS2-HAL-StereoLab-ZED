@@ -183,6 +183,11 @@ class SLAM_Zed_Node(Node):
                         self.publish_pose_data()
 
                     self.publish_odom_data()
+                else: 
+                    print("Error in Tracking State")
+
+            else: 
+                print("Error in grab zed")
 
             if False and self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
                 # Check if the data has been updated since the last time
