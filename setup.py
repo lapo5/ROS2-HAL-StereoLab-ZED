@@ -27,7 +27,7 @@ setup(
         'console_scripts': [
         "camera_node = zed_camera.camera_node:main",
         "tf_camera_node = zed_camera.tf_camera_node:main",
-        "slam = zed_camera.slam:main",
+        "localisation = zed_camera.localisation:main",
         ],
     },
 )

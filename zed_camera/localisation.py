@@ -6,6 +6,7 @@ from rclpy.node import Node
 import cv2
 from std_msgs.msg import Header
 from sensor_msgs.msg import Image
+from sensor_msgs.msg import Imu
 from geometry_msgs.msg import PoseStamped, TransformStamped
 from nav_msgs.msg import Odometry
 from std_srvs.srv import Empty
@@ -69,8 +70,6 @@ class SLAM_Zed_Node(Node):
         self.py_translation = sl.Translation()
         self.pose_data = sl.Transform()
 
-        self.sensor_data = sl.SensorsData()
-
 
         qos_profile = QoSProfile(depth=10)
         qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
@@ -80,6 +79,11 @@ class SLAM_Zed_Node(Node):
         # Publishers
         self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose", qos_profile)
         self.odom_pub = self.create_publisher(Odometry, "/zed_camera/odom", qos_profile)
+        self.imu_pub  = self.create_publisher(Imu, "/zed_camera/imu", qos_profile)
+
+        self.enable_publish_imu = True
+        self.ts_handler = TimestampHandler()
+        self.sensor_data = sl.SensorsData()
 
         self.do_slam = True
         self.enable_publish_pose_data = False
@@ -110,7 +114,7 @@ class SLAM_Zed_Node(Node):
                     self.translation = self.camera_pose.get_translation(self.py_translation)
                     self.pose_data = sl.Pose()
 
-                    if ts_handler.is_new(sensors_data.get_imu_data()):
+                    if self.ts_handler.is_new(sensors_data.get_imu_data()):
                         self.quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
                         print("IMU Orientation: {}".format(self.quaternion))
                         self.linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
@@ -118,11 +122,50 @@ class SLAM_Zed_Node(Node):
                         self.angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
                         print("IMU Angular Velocity: {} [deg/sec]".format(self.angular_velocity))
 
+                        if self.enable_publish_imu:
+                            self.publish_imu_data()
+
+
                     if self.enable_publish_pose_data:
                         self.publish_pose_data()
 
                     self.publish_odom_data()
 
+    def publish_imu_data(self):
+
+        msg = Imu()
+
+        msg.header = Header()
+        msg.header.stamp = self.get_clock().now().to_msg()
+
+        msg.header.frame_id = "zed_link"
+
+        msg.orientation.x = 0.0
+        msg.orientation.y = 0.0
+        msg.orientation.z = 0.0
+        msg.orientation.w = 0.0
+
+        msg.orientation_covariance[0] = 1e3
+        msg.orientation_covariance[4] = 1e3
+        msg.orientation_covariance[8] = 1e3
+
+        msg.angular_velocity.x = float(self.rotvel[0])
+        msg.angular_velocity.y = float(self.rotvel[1])
+        msg.angular_velocity.z = float(self.rotvel[2])
+
+        msg.angular_velocity_covariance[0] = 0.0004
+        msg.angular_velocity_covariance[4] = 0.0004
+        msg.angular_velocity_covariance[8] = 0.0004
+
+        msg.linear_acceleration.x = float(self.linacc[0])
+        msg.linear_acceleration.y = float(self.linacc[1])
+        msg.linear_acceleration.z = float(self.linacc[2])
+
+        msg.linear_acceleration_covariance[0] = 0.0004
+        msg.linear_acceleration_covariance[4] = 0.0004
+        msg.linear_acceleration_covariance[8] = 0.0004
+
+        self.imu_pub.publish(msg)
 
     def publish_odom_data(self):
 
