@@ -23,6 +23,34 @@ import numpy as np
 import tf2_ros
 from scipy.spatial.transform import Rotation as R
 
+## 
+# Basic class to handle the timestamp of the different sensors to know if it is a new sensors_data or an old one
+class TimestampHandler:
+    def __init__(self):
+        self.t_imu = sl.Timestamp()
+        self.t_baro = sl.Timestamp()
+        self.t_mag = sl.Timestamp()
+
+    ##
+    # check if the new timestamp is higher than the reference one, and if yes, save the current as reference
+    def is_new(self, sensor):
+        if (isinstance(sensor, sl.IMUData)):
+            new_ = (sensor.timestamp.get_microseconds() > self.t_imu.get_microseconds())
+            if new_:
+                self.t_imu = sensor.timestamp
+            return new_
+        elif (isinstance(sensor, sl.MagnetometerData)):
+            new_ = (sensor.timestamp.get_microseconds() > self.t_mag.get_microseconds())
+            if new_:
+                self.t_mag = sensor.timestamp
+            return new_
+        elif (isinstance(sensor, sl.BarometerData)):
+            new_ = (sensor.timestamp.get_microseconds() > self.t_baro.get_microseconds())
+            if new_:
+                self.t_baro = sensor.timestamp
+            return new_
+
+
 # Class definition of the calibration function
 class SLAM_Zed_Node(Node):
     def __init__(self):
