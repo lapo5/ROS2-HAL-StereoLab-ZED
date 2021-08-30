@@ -184,7 +184,7 @@ class SLAM_Zed_Node(Node):
 
                     self.publish_odom_data()
 
-            if self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
+            if False and self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
                 # Check if the data has been updated since the last time
                 # IMU is the sensor with the highest rate
                 if self.ts_handler.is_new(self.sensors_data.get_imu_data()):
