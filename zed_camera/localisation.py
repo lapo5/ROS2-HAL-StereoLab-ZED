@@ -50,6 +50,21 @@ class TimestampHandler:
                 self.t_baro = sensor.timestamp
             return new_
 
+##
+#  Function to display sensor parameters
+def printSensorParameters(sensor_parameters):
+    if sensor_parameters.is_available:
+        print("*****************************")
+        print("Sensor type: " + str(sensor_parameters.sensor_type))
+        print("Max rate: "  + str(sensor_parameters.sampling_rate) + " "  + str(sl.SENSORS_UNIT.HERTZ))
+        print("Range: "  + str(sensor_parameters.sensor_range) + " "  + str(sensor_parameters.sensor_unit))
+        print("Resolution: " + str(sensor_parameters.resolution) + " "  + str(sensor_parameters.sensor_unit))
+        if not math.isnan(sensor_parameters.noise_density):
+            print("Noise Density: "  + str(sensor_parameters.noise_density) + " " + str(sensor_parameters.sensor_unit) + "/√Hz")
+        if not math.isnan(sensor_parameters.random_walk):
+            print("Random Walk: "  + str(sensor_parameters.random_walk) + " " + str(sensor_parameters.sensor_unit) + "/s/√Hz")
+    
+
 
 # Class definition of the calibration function
 class SLAM_Zed_Node(Node):
@@ -90,6 +105,26 @@ class SLAM_Zed_Node(Node):
                                                                 _enable_imu_fusion=True)
 
         self.zed.enable_positional_tracking(self.tracking_params)
+
+        # Get camera information sensors_data
+        info = self.zed.get_camera_information()
+
+        cam_model = info.camera_model
+        if cam_model == sl.MODEL.ZED :
+            print("This tutorial only supports ZED-M and ZED2 camera models, ZED does not have additional sensors")
+            exit(1)
+
+        # Display camera information (model,S/N, fw version)
+        print("Camera Model: " + str(cam_model))
+        print("Serial Number: " + str(info.serial_number))
+        print("Camera Firmware: " + str(info.camera_configuration.firmware_version))
+        print("Sensors Firmware: " + str(info.sensors_configuration.firmware_version))
+
+        # Display sensors parameters (imu,barometer,magnetometer)
+        printSensorParameters(info.sensors_configuration.accelerometer_parameters) # accelerometer configuration
+        printSensorParameters(info.sensors_configuration.gyroscope_parameters) # gyroscope configuration
+        printSensorParameters(info.sensors_configuration.magnetometer_parameters) # magnetometer configuration
+        printSensorParameters(info.sensors_configuration.barometer_parameters) # barometer configuration
 
         self.runtime = sl.RuntimeParameters()
         self.camera_pose = sl.Pose()
