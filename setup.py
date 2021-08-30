@@ -28,6 +28,7 @@ setup(
         "camera_node = zed_camera.camera_node:main",
         "tf_camera_node = zed_camera.tf_camera_node:main",
         "localisation = zed_camera.localisation:main",
+        "zed_imu_covariance_decorator = zed_camera.zed_imu_covariance_decorator:main"
         ],
     },
 )
