@@ -35,6 +35,7 @@ class ZedNode(Node):
         self.init = sl.InitParameters()
         self.init.camera_resolution = sl.RESOLUTION.HD720
         self.init.depth_mode = sl.DEPTH_MODE.NONE
+        self.init_params.camera_fps = 30  # Set fps at 30
         self.cam = sl.Camera()
         self.status = self.cam.open(self.init)
         if self.status != sl.ERROR_CODE.SUCCESS:
@@ -47,11 +48,7 @@ class ZedNode(Node):
         self.stream.codec = sl.STREAMING_CODEC.H264
         self.stream.bitrate = 8000
         self.stream.port = 30000 # Port used for sending the stream
-        self.status = self.cam.enable_streaming(self.stream)
-
-        if self.status != sl.ERROR_CODE.SUCCESS:
-            print(repr(self.status))
-            sys.exit(1)
+        #self.status = self.cam.enable_streaming(self.stream)
 
         self.mat = sl.Mat()
 
@@ -89,15 +86,11 @@ class ZedNode(Node):
                 self.frame_rbga = self.mat.get_data()
                 self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
 
-                print(self.frame.shape)
-
-                self.get_logger().info("Sending Image")
                 self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
                 self.image_message.header = Header()
                 self.image_message.header.stamp = self.get_clock().now().to_msg()
                 self.image_message.header.frame_id = "zed_link"
                 self.frame_pub.publish(self.image_message)
-                self.get_logger().info("Image Sent")
 
             else:
                 self.get_logger().info("Error Grab Image")
