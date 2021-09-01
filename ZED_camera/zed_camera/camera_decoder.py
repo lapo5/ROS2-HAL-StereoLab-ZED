@@ -92,36 +92,11 @@ class ZedDecoderNode(Node):
         self.thread1.start()
 
         # Publishers
-        self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
+        self.frame_pub = self.create_publisher(Image, "/zed_camera/decoded_frame")
         self.timer = self.create_timer(0.03, self.publish_frame)
 
         # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_video_feed", self.stop_video_feed)
-
-
-
-    # This function stops/enable the acquisition stream
-    def stop_video_feed(self, request, response):
-        self.acquire_frame = False
-        return response
-
-
-
-    # This function save the current frame in a class attribute
-    def get_frame(self):
-
-        while self.acquire_frame:
-            err = self.cam.grab(self.runtime)
-            if (err == sl.ERROR_CODE.SUCCESS) :
-                self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
-                self.frame_rbga = self.mat.get_data()
-                self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
-
-
-    # This function stops/enable the acquisition stream
-    def exit(self):
-        self.acquire_frame = False
-
 
 
     # Publisher function

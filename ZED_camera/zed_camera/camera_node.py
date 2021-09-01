@@ -95,7 +95,7 @@ class ZedNode(Node):
 
                 self.get_logger().info("Sending Image")
                 self.image_message = CompressedImage()
-                self.image.data = []
+                self.image_message.data = []
 
                 for i in range(0, 720):
                     for j in range(0, 1280):
