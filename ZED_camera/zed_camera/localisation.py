@@ -113,26 +113,28 @@ class SLAM_Zed_Node(Node):
         self.do_slam = True
         self.enable_publish_pose_data = False
 
-        self.grab_image = True
+        self.grab_image = False
         self.mat = sl.Mat()
 
         self.frame = None
         self.bridge = CvBridge()
 
-        # Acquisition thread
-        self.thread1 = threading.Thread(target=self.get_image, daemon=True)
-        self.thread1.start()
-
         # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
 
 
-        self.timer = self.create_timer(0.03, self.get_pose)
+        # Service: stop acquisition
+        self.image_toggle_service = self.create_service(Empty, "/zed_camera/toggle_image_grabbing", self.image_toggle)
+
+
+        self.timer = self.create_timer(0.01, self.get_pose)
+
+        self.timer = self.create_timer(0.03, self.get_image)
 
     # This function save the current frame in a class attribute
     def get_image(self):
 
-        while self.grab_image:
+        if self.grab_image:
             err = self.zed.grab(self.runtime)
             if (err == sl.ERROR_CODE.SUCCESS) :
                 self.zed.retrieve_image(self.mat, sl.VIEW.LEFT)
@@ -155,6 +157,14 @@ class SLAM_Zed_Node(Node):
         self.grab_image = False
 
         return response
+
+    # This function stops/enable the acquisition stream
+    def image_toggle(self, request, response):
+ 
+        self.grab_image = not self.grab_image
+
+        return response
+
 
     # This function save the current frame in a class attribute
     def get_pose(self):
