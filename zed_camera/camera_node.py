@@ -92,6 +92,10 @@ class ZedNode(Node):
                 self.frame_rbga = self.mat.get_data()
                 self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
 
+                self.get_logger().info("Grabbing Image")
+            else:
+                self.get_logger().info("Error Grab Image")
+
 
     # This function stops/enable the acquisition stream
     def exit(self):
@@ -105,13 +109,12 @@ class ZedNode(Node):
         if self.frame is None or len(self.frame) == 0:
             return
 
+        self.get_logger().info("Stream Image")
 
         self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
-        self.image_message.header = Header()
         now = time.time()
         self.image_message.header = Header()
-        self.image_message.header.stamp.sec = int(now)
-        self.image_message.header.stamp.nanosec = int(now* 1e9) % 1000000000
+        self.image_message.header.stamp = self.get_clock().now().to_msg()
         self.image_message.header.frame_id = "zed_link"
         self.frame_pub.publish(self.image_message)
 
