@@ -120,7 +120,7 @@ class SLAM_Zed_Node(Node):
     # This function save the current frame in a class attribute
     def get_image(self):
 
-        while self.acquire_frame:
+        while self.grab_image:
             err = self.cam.grab(self.runtime)
             if (err == sl.ERROR_CODE.SUCCESS) :
                 self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
