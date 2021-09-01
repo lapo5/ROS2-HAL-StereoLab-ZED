@@ -106,16 +106,41 @@ class SLAM_Zed_Node(Node):
         self.do_slam = True
         self.enable_publish_pose_data = False
 
+        self.grab_image = True
+        # Acquisition thread
+        self.thread1 = threading.Thread(target=self.get_image, daemon=True)
+        self.thread1.start()
+
         # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
 
 
         self.timer = self.create_timer(0.03, self.get_pose)
 
+    # This function save the current frame in a class attribute
+    def get_image(self):
+
+        while self.acquire_frame:
+            err = self.cam.grab(self.runtime)
+            if (err == sl.ERROR_CODE.SUCCESS) :
+                self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
+                self.frame_rbga = self.mat.get_data()
+                self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
+
+                self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
+                self.image_message.header = Header()
+                self.image_message.header.stamp = self.get_clock().now().to_msg()
+                self.image_message.header.frame_id = "zed_link"
+                self.frame_pub.publish(self.image_message)
+
+            else:
+                self.get_logger().info("Error Grab Image")
+
 
     # This function stops/enable the acquisition stream
     def stop_slam(self, request, response):
         self.do_slam = False
+        self.grab_image = False
 
         return response
 
