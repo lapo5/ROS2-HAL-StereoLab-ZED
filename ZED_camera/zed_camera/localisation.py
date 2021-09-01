@@ -120,7 +120,7 @@ class SLAM_Zed_Node(Node):
         self.bridge = CvBridge()
 
         # Service: stop acquisition
-        self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
+        self.stop_service = self.create_service(Empty, "/zed_camera/stop_localisation", self.stop_slam)
 
 
         # Service: stop acquisition
