@@ -52,7 +52,7 @@ class ZedNode(Node):
         self.acquire_frame = True
 
         qos_profile = QoSProfile(depth=1)
-        qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
+        qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
         qos_profile.history = QoSHistoryPolicy.KEEP_LAST
 
         # Publishers
