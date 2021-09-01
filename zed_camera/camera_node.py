@@ -66,9 +66,7 @@ class ZedNode(Node):
 
         # Publishers
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame", qos_profile)
-        self.timer = self.create_timer(0.03, self.publish_frame)
-
-        self.timer2 = self.create_timer(0.03, self.get_frame)
+        self.timer = self.create_timer(0.03, self.get_frame)
 
         # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_video_feed", self.stop_video_feed)
@@ -92,7 +90,16 @@ class ZedNode(Node):
                 self.frame_rbga = self.mat.get_data()
                 self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
 
-                self.get_logger().info("Grabbing Image")
+                if self.frame is None or len(self.frame) == 0:
+                    return
+
+                self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
+                now = time.time()
+                self.image_message.header = Header()
+                self.image_message.header.stamp = self.get_clock().now().to_msg()
+                self.image_message.header.frame_id = "zed_link"
+                self.frame_pub.publish(self.image_message)
+
             else:
                 self.get_logger().info("Error Grab Image")
 
@@ -100,23 +107,6 @@ class ZedNode(Node):
     # This function stops/enable the acquisition stream
     def exit(self):
         self.acquire_frame = False
-
-
-
-    # Publisher function
-    def publish_frame(self):
-
-        if self.frame is None or len(self.frame) == 0:
-            return
-
-        self.get_logger().info("Stream Image")
-
-        self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
-        now = time.time()
-        self.image_message.header = Header()
-        self.image_message.header.stamp = self.get_clock().now().to_msg()
-        self.image_message.header.frame_id = "zed_link"
-        self.frame_pub.publish(self.image_message)
 
 
 
