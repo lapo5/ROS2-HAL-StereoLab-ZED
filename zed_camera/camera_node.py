@@ -59,8 +59,12 @@ class ZedNode(Node):
         self.thread1 = threading.Thread(target=self.get_frame, daemon=True)
         self.thread1.start()
 
+        qos_profile = QoSProfile(depth=10)
+        qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
+        qos_profile.history = QoSHistoryPolicy.KEEP_LAST
+
         # Publishers
-        self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame")
+        self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame", qos_profile)
         self.timer = self.create_timer(0.03, self.publish_frame)
 
         # Service: stop acquisition
