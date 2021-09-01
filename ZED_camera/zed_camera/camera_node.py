@@ -42,6 +42,8 @@ class ZedNode(Node):
             print(repr(self.status))
             sys.exit(1)
 
+        self.runtime = sl.RuntimeParameters()
+
         self.mat = sl.Mat()
 
         self.frame = None
