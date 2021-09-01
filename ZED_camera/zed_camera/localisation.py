@@ -269,7 +269,7 @@ class SLAM_Zed_Node(Node):
         #    msg.pose.covariance[i] = self.pose_data.pose_covariance[i]
 
         for i in range(0, 6):
-            msg.pose.covariance[i * 7] = 0.1
+            msg.pose.covariance[i * 7] = 0.01
 
         for i in range(0, 6):
             msg.twist.covariance[i * 7] = 1e3
