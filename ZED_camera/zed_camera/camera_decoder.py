@@ -87,11 +87,11 @@ class ZedDecoderNode(Node):
 
         self.acquire_frame = True
 
-        # Acquisition thread
-        self.thread1 = threading.Thread(target=self.get_frame, daemon=True)
-        self.thread1.start()
-
         # Publishers
+        
+        self.cmd_vel = self.create_subscription(CompressedImage, "/zed_camera/decoded_frame", 
+            self.callback_cmd_vel, 1)
+
         self.frame_pub = self.create_publisher(Image, "/zed_camera/decoded_frame")
         self.timer = self.create_timer(0.03, self.publish_frame)
 

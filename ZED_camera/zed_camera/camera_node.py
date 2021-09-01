@@ -10,8 +10,6 @@ from std_srvs.srv import Empty
 from cv_bridge import CvBridge
 import threading
 
-from zed_camera_interfaces.msg import CompressedImage
-
 from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
 from rclpy.qos import QoSProfile
 
@@ -67,7 +65,7 @@ class ZedNode(Node):
         qos_profile.history = QoSHistoryPolicy.KEEP_LAST
 
         # Publishers
-        self.frame_pub = self.create_publisher(CompressedImage, "/zed_camera/raw_frame", qos_profile)
+        self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame", qos_profile)
         self.timer = self.create_timer(0.03, self.get_frame)
 
         # Service: stop acquisition
@@ -94,13 +92,10 @@ class ZedNode(Node):
                 print(self.frame.shape)
 
                 self.get_logger().info("Sending Image")
-                self.image_message = CompressedImage()
-                self.image_message.data = []
-
-                for i in range(0, 720):
-                    for j in range(0, 1280):
-                        self.image_message.data.insert(len(self.image_message.data), self.frame[i, j])
-
+                self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
+                self.image_message.header = Header()
+                self.image_message.header.stamp = self.get_clock().now().to_msg()
+                self.image_message.header.frame_id = "zed_link"
                 self.frame_pub.publish(self.image_message)
                 self.get_logger().info("Image Sent")
 
