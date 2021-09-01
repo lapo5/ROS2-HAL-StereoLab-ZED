@@ -103,11 +103,9 @@ class ZedNode(Node):
     def publish_frame(self):
 
         if self.frame is None or len(self.frame) == 0:
-            print("Male")
             return
 
-        print("Bene")
-        
+
         self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
         self.image_message.header = Header()
         now = time.time()
