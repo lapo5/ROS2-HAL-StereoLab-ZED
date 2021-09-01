@@ -103,15 +103,18 @@ class ZedNode(Node):
     def publish_frame(self):
 
         if self.frame is None or len(self.frame) == 0:
+            print("Male")
             return
 
+        print("Bene")
+        
         self.image_message = self.bridge.cv2_to_imgmsg(self.frame, encoding="mono8")
         self.image_message.header = Header()
         now = time.time()
         self.image_message.header = Header()
         self.image_message.header.stamp.sec = int(now)
         self.image_message.header.stamp.nanosec = int(now* 1e9) % 1000000000
-        self.image_message.header.frame_id = "ZED_Camera_Base"
+        self.image_message.header.frame_id = "zed_link"
         self.frame_pub.publish(self.image_message)
 
 
