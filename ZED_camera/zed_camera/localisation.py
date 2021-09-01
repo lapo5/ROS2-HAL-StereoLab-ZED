@@ -43,8 +43,8 @@ class TimestampHandler:
 # Class definition of the calibration function
 class SLAM_Zed_Node(Node):
     def __init__(self):
-        super().__init__("slam_zed_node")
-        self.get_logger().info("ZED SLAM node is awake...")
+        super().__init__("localisation_zed_node")
+        self.get_logger().info("ZED Localisation node is awake...")
 
         self.br = tf2_ros.TransformBroadcaster(self)
 
@@ -306,15 +306,14 @@ def main(args=None):
         while node.do_slam:
             rclpy.spin_once(node)
     except KeyboardInterrupt:
-        print('ZED SLAM Node stopped cleanly')
+        print('ZED Loc Node stopped cleanly')
         node.exit()
     except BaseException:
-        print('Exception in ZED SLAM Node:', file=sys.stderr)
+        print('Exception in ZED Loc Node:', file=sys.stderr)
         raise
     finally:
         # Destroy the node explicitly
         # (optional - Done automatically when node is garbage collected)
-        node.thread1.join()
         node.zed.close()
         node.destroy_node()
         rclpy.shutdown()
