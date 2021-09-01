@@ -99,6 +99,13 @@ class SLAM_Zed_Node(Node):
         self.odom_pub = self.create_publisher(Odometry, "/zed_camera/odom", qos_profile)
         self.imu_pub  = self.create_publisher(Imu, "/zed_camera/imu", qos_profile)
 
+
+        qos_profile2 = QoSProfile(depth=1)
+        qos_profile2.reliability = QoSReliabilityPolicy.BEST_EFFORT
+        qos_profile2.history = QoSHistoryPolicy.KEEP_LAST
+
+        self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame", qos_profile2)
+
         self.enable_publish_imu = True
         self.ts_handler = TimestampHandler()
         self.sensors_data = sl.SensorsData()
@@ -107,6 +114,11 @@ class SLAM_Zed_Node(Node):
         self.enable_publish_pose_data = False
 
         self.grab_image = True
+        self.mat = sl.Mat()
+
+        self.frame = None
+        self.bridge = CvBridge()
+
         # Acquisition thread
         self.thread1 = threading.Thread(target=self.get_image, daemon=True)
         self.thread1.start()
@@ -123,7 +135,7 @@ class SLAM_Zed_Node(Node):
         while self.grab_image:
             err = self.zed.grab(self.runtime)
             if (err == sl.ERROR_CODE.SUCCESS) :
-                self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
+                self.zed.retrieve_image(self.mat, sl.VIEW.LEFT)
                 self.frame_rbga = self.mat.get_data()
                 self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
 
