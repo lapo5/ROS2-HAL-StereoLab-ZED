@@ -121,7 +121,7 @@ class SLAM_Zed_Node(Node):
     def get_image(self):
 
         while self.grab_image:
-            err = self.cam.grab(self.runtime)
+            err = self.zed.grab(self.runtime)
             if (err == sl.ERROR_CODE.SUCCESS) :
                 self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
                 self.frame_rbga = self.mat.get_data()
