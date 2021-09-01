@@ -82,7 +82,7 @@ class ZedNode(Node):
     # This function save the current frame in a class attribute
     def get_frame(self):
 
-        if not self.acquire_frame:
+        while self.acquire_frame:
             err = self.cam.grab(self.runtime)
             if (err == sl.ERROR_CODE.SUCCESS) :
                 self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)

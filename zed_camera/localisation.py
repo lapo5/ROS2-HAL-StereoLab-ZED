@@ -105,10 +105,6 @@ class SLAM_Zed_Node(Node):
         self.do_slam = True
         self.enable_publish_pose_data = False
 
-        # Acquisition thread
-        self.thread1 = threading.Thread(target=self.get_pose, daemon=True)
-        self.thread1.start()
-
         # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
 
@@ -125,7 +121,7 @@ class SLAM_Zed_Node(Node):
     # This function save the current frame in a class attribute
     def get_pose(self):
 
-        while self.do_slam:
+        if not self.do_slam:
             if self.zed.grab(self.runtime) == sl.ERROR_CODE.SUCCESS:
                 tracking_state = self.zed.get_position(self.camera_pose)
                 if tracking_state == sl.POSITIONAL_TRACKING_STATE.OK:
