@@ -35,7 +35,7 @@ class ZedNode(Node):
         self.init = sl.InitParameters()
         self.init.camera_resolution = sl.RESOLUTION.HD720
         self.init.depth_mode = sl.DEPTH_MODE.NONE
-        self.init_params.camera_fps = 30  # Set fps at 30
+        self.init.camera_fps = 30  # Set fps at 30
         self.cam = sl.Camera()
         self.status = self.cam.open(self.init)
         if self.status != sl.ERROR_CODE.SUCCESS:
