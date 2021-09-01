@@ -122,7 +122,7 @@ class SLAM_Zed_Node(Node):
     # This function save the current frame in a class attribute
     def get_pose(self):
 
-        if not self.do_slam:
+        if self.do_slam:
             if self.zed.grab(self.runtime) == sl.ERROR_CODE.SUCCESS:
                 tracking_state = self.zed.get_position(self.camera_pose)
                 if tracking_state == sl.POSITIONAL_TRACKING_STATE.OK:
