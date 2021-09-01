@@ -48,7 +48,7 @@ class ZedNode(Node):
         self.stream.bitrate = 8000
         self.stream.port = 30000 # Port used for sending the stream
         self.status = self.cam.enable_streaming(self.stream)
-        
+
         if self.status != sl.ERROR_CODE.SUCCESS:
             print(repr(self.status))
             sys.exit(1)
@@ -60,10 +60,6 @@ class ZedNode(Node):
 
         self.acquire_frame = True
 
-        # Acquisition thread
-        self.thread1 = threading.Thread(target=self.get_frame, daemon=True)
-        self.thread1.start()
-
         qos_profile = QoSProfile(depth=10)
         qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
         qos_profile.history = QoSHistoryPolicy.KEEP_LAST
@@ -71,6 +67,8 @@ class ZedNode(Node):
         # Publishers
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame", qos_profile)
         self.timer = self.create_timer(0.03, self.publish_frame)
+
+        self.timer2 = self.create_timer(0.03, self.get_frame)
 
         # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_video_feed", self.stop_video_feed)
@@ -137,7 +135,6 @@ def main(args=None):
         # Destroy the node explicitly
         # (optional - Done automatically when node is garbage collected)
         
-        node.thread1.join()
         node.cam.disable_streaming()
         node.cam.close()
         node.destroy_node()
