@@ -43,6 +43,12 @@ class ZedNode(Node):
 
         self.runtime = sl.RuntimeParameters()
 
+        self.stream = sl.StreamingParameters()
+        self.stream.codec = sl.STREAMING_CODEC.H264
+        self.stream.bitrate = 8000
+        self.stream.port = 30000 # Port used for sending the stream
+        self.status = self.cam.enable_streaming(self.stream)
+
         if self.status != sl.ERROR_CODE.SUCCESS:
             print(repr(self.status))
             sys.exit(1)
@@ -76,7 +82,7 @@ class ZedNode(Node):
     # This function save the current frame in a class attribute
     def get_frame(self):
 
-        while self.acquire_frame:
+        if self.acquire_frame:
             err = self.cam.grab(self.runtime)
             if (err == sl.ERROR_CODE.SUCCESS) :
                 self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
