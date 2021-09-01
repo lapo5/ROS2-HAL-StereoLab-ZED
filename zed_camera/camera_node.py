@@ -90,7 +90,7 @@ class ZedNode(Node):
                 self.frame_rbga = self.mat.get_data()
 
                 self.get_logger().info("Sending Image")
-                self.image_message = self.bridge.cv2_to_imgmsg(self.frame_rbga, encoding="mono8")
+                self.image_message = self.bridge.cv2_to_imgmsg(self.frame_rbga, encoding="8UC4")
                 now = time.time()
                 self.image_message.header = Header()
                 self.image_message.header.stamp = self.get_clock().now().to_msg()
