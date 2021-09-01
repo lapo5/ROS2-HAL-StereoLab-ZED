@@ -29,8 +29,6 @@ from scipy.spatial.transform import Rotation as R
 class TimestampHandler:
     def __init__(self):
         self.t_imu = sl.Timestamp()
-        self.t_baro = sl.Timestamp()
-        self.t_mag = sl.Timestamp()
 
     ##
     # check if the new timestamp is higher than the reference one, and if yes, save the current as reference
@@ -39,16 +37,6 @@ class TimestampHandler:
             new_ = (sensor.timestamp.get_microseconds() > self.t_imu.get_microseconds())
             if new_:
                 self.t_imu = sensor.timestamp
-            return new_
-        elif (isinstance(sensor, sl.MagnetometerData)):
-            new_ = (sensor.timestamp.get_microseconds() > self.t_mag.get_microseconds())
-            if new_:
-                self.t_mag = sensor.timestamp
-            return new_
-        elif (isinstance(sensor, sl.BarometerData)):
-            new_ = (sensor.timestamp.get_microseconds() > self.t_baro.get_microseconds())
-            if new_:
-                self.t_baro = sensor.timestamp
             return new_
 
 
@@ -151,19 +139,18 @@ class SLAM_Zed_Node(Node):
                     print("Tracking State: {0}".format(tracking_state))
                     
             else: 
-                print("Error in grab zed")
+                print("Error in Grab Localisation ZED2 Data")
 
             if self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
                 # Check if the data has been updated since the last time
                 # IMU is the sensor with the highest rate
-                if self.ts_handler.is_new(self.sensors_data.get_imu_data()):
-                    self.sensors_data.get_imu_data()
-                    self.imu_quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
-                    self.imu_linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
-                    self.imu_angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
-                
-                    if self.enable_publish_imu:
-                        self.publish_imu_data()
+                self.sensors_data.get_imu_data()
+                self.imu_quaternion = self.sensors_data.get_imu_data().get_pose().get_orientation().get()
+                self.imu_linear_acceleration = self.sensors_data.get_imu_data().get_linear_acceleration()
+                self.imu_angular_velocity = self.sensors_data.get_imu_data().get_angular_velocity()
+            
+                if self.enable_publish_imu:
+                    self.publish_imu_data()
 
 
     def publish_imu_data(self):
@@ -180,9 +167,9 @@ class SLAM_Zed_Node(Node):
         msg.orientation.z = self.imu_quaternion[2]
         msg.orientation.w = self.imu_quaternion[3]
 
-        msg.orientation_covariance[0] = 0.1
-        msg.orientation_covariance[4] = 0.1
-        msg.orientation_covariance[8] = 0.1
+        msg.orientation_covariance[0] = 0.5
+        msg.orientation_covariance[4] = 0.5
+        msg.orientation_covariance[8] = 0.5
 
         msg.angular_velocity.x = float(self.imu_angular_velocity[0])
         msg.angular_velocity.y = float(self.imu_angular_velocity[1])
@@ -232,8 +219,11 @@ class SLAM_Zed_Node(Node):
         msg.pose.pose.position.y = float(world_to_rover[1, 3])
         msg.pose.pose.position.z = float(world_to_rover[2, 3])
 
-        for i in range(0, 36):
-            msg.pose.covariance[i] = self.pose_data.pose_covariance[i]
+        #for i in range(0, 36):
+        #    msg.pose.covariance[i] = self.pose_data.pose_covariance[i]
+
+        for i in range(0, 6):
+            msg.pose.covariance[i * 7] = 0.1
 
         for i in range(0, 6):
             msg.twist.covariance[i * 7] = 1e3
