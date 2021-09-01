@@ -63,13 +63,10 @@ class SLAM_Zed_Node(Node):
         self.bridge = CvBridge()
         self.frame = None
 
-        self.init_params = sl.InitParameters(camera_resolution=sl.RESOLUTION.HD720,
+        self.init_params = sl.InitParameters(camera_resolution=sl.RESOLUTION.VGA,
                              coordinate_units=sl.UNIT.METER,
-                             coordinate_system=sl.COORDINATE_SYSTEM.RIGHT_HANDED_Z_UP)
-        
-        self.init_params.camera_resolution = sl.RESOLUTION.VGA
-        self.init_params.depth_mode = sl.DEPTH_MODE.NONE
-        self.init_params.camera_fps = 100
+                             coordinate_system=sl.COORDINATE_SYSTEM.RIGHT_HANDED_Z_UP,
+                             camera_fps=100)
          
         self.zed = sl.Camera()
         status = self.zed.open(self.init_params)
