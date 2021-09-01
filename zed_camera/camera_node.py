@@ -72,7 +72,6 @@ class ZedNode(Node):
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_video_feed", self.stop_video_feed)
 
 
-
     # This function stops/enable the acquisition stream
     def stop_video_feed(self, request, response):
         self.acquire_frame = False
@@ -83,7 +82,7 @@ class ZedNode(Node):
     # This function save the current frame in a class attribute
     def get_frame(self):
 
-        while self.acquire_frame:
+        if not self.acquire_frame:
             err = self.cam.grab(self.runtime)
             if (err == sl.ERROR_CODE.SUCCESS) :
                 self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
@@ -91,7 +90,6 @@ class ZedNode(Node):
 
                 self.get_logger().info("Sending Image")
                 self.image_message = self.bridge.cv2_to_imgmsg(self.frame_rbga, encoding="8UC4")
-                now = time.time()
                 self.image_message.header = Header()
                 self.image_message.header.stamp = self.get_clock().now().to_msg()
                 self.image_message.header.frame_id = "zed_link"

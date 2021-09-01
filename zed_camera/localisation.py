@@ -113,6 +113,8 @@ class SLAM_Zed_Node(Node):
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_slam", self.stop_slam)
 
 
+        self.timer = self.create_timer(0.03, self.get_pose)
+
 
     # This function stops/enable the acquisition stream
     def stop_slam(self, request, response):
