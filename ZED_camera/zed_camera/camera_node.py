@@ -35,7 +35,7 @@ class ZedNode(Node):
         self.init = sl.InitParameters()
         self.init.camera_resolution = sl.RESOLUTION.VGA
         self.init.depth_mode = sl.DEPTH_MODE.NONE
-        self.init.camera_fps = 100  # Set fps at 30
+        self.init.camera_fps = 100
         self.cam = sl.Camera()
         self.status = self.cam.open(self.init)
         if self.status != sl.ERROR_CODE.SUCCESS:
@@ -43,12 +43,6 @@ class ZedNode(Node):
             sys.exit(1)
 
         self.runtime = sl.RuntimeParameters()
-
-        self.stream = sl.StreamingParameters()
-        self.stream.codec = sl.STREAMING_CODEC.H264
-        self.stream.bitrate = 8000
-        self.stream.port = 30000 # Port used for sending the stream
-        self.status = self.cam.enable_streaming(self.stream)
 
         self.mat = sl.Mat()
 
@@ -63,7 +57,7 @@ class ZedNode(Node):
 
         # Publishers
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame", qos_profile)
-        self.timer = self.create_timer(0.03, self.get_frame)
+        self.timer = self.create_timer(0.01, self.get_frame)
 
         # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_video_feed", self.stop_video_feed)
