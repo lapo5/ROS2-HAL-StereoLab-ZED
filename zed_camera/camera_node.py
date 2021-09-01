@@ -87,6 +87,9 @@ class ZedNode(Node):
             if (err == sl.ERROR_CODE.SUCCESS) :
                 self.cam.retrieve_image(self.mat, sl.VIEW.LEFT)
                 self.frame_rbga = self.mat.get_data()
+                self.frame = cv2.cvtColor(self.frame_rbga, cv2.COLOR_BGRA2GRAY)
+
+                print(self.frame.shape)
 
                 self.get_logger().info("Sending Image")
                 self.image_message = self.bridge.cv2_to_imgmsg(self.frame_rbga, encoding="8UC4")
