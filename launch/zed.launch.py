@@ -12,7 +12,7 @@ def generate_launch_description():
     camera_model = 'zed2'
 
     # Camera name
-    camera_name = 'zed'
+    camera_name = 'zed2'
 
     # URDF file to be loaded by Robot State Publisher
     urdf = os.path.join(
