@@ -166,6 +166,7 @@ class SLAM_Zed_Node(Node):
         # Retrieve spatial_map when ready
         if self.zed.get_spatial_map_request_status_async() == sl.ERROR_CODE.SUCCESS :
             self.zed.retrieve_spatial_map_async(self.mesh)
+            print(self.mesh)
 
 
     # This function stops/enable the acquisition stream
