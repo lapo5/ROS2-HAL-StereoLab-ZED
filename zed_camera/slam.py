@@ -139,7 +139,7 @@ class SLAM_Zed_Node(Node):
 
         self.timer = self.create_timer(0.01, self.get_pose)
 
-        self.timer = self.create_timer(0.03, self.get_image)
+        self.timer = self.create_timer(0.1, self.get_image)
 
     # This function save the current frame in a class attribute
     def get_image(self):
@@ -163,9 +163,9 @@ class SLAM_Zed_Node(Node):
     def get_map(self):
         self.zed.request_spatial_map_async()
 
-          # Retrieve spatial_map when ready
-          if self.zed.get_spatial_map_request_status_async() == sl.ERROR_CODE.SUCCESS :
-             self.zed.retrieve_spatial_map_async(self.mesh)
+        # Retrieve spatial_map when ready
+        if self.zed.get_spatial_map_request_status_async() == sl.ERROR_CODE.SUCCESS :
+            self.zed.retrieve_spatial_map_async(self.mesh)
 
 
     # This function stops/enable the acquisition stream
