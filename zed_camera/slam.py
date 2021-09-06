@@ -98,7 +98,7 @@ class SLAM_Zed_Node(Node):
         self.mapping_parameters.resolution_meter = 0.03 # Set resolution to 3cm
         self.mapping_parameters.map_type = sl.SPATIAL_MAP_TYPE.FUSED_POINT_CLOUD
         self.mapping_parameters.save_texture = True # Scene texture will be recorded
-        self.zed.enable_spatial_mapping(mapping_parameters)
+        self.zed.enable_spatial_mapping(self.mapping_parameters)
 
         self.fused_pc = sl.FusedPointCloud()
 
