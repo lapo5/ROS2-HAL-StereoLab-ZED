@@ -101,7 +101,7 @@ class SLAM_Zed_Node(Node):
         self.mapping_parameters.save_texture = True # Scene texture will be recorded
         self.zed.enable_spatial_mapping(mapping_parameters)
 
-        self.mesh = sl.Mesh() # Create a Mesh object or FusedPointCloud
+        self.fused_pc = sl.FusedPointCloud()
 
 
         # Publishers
@@ -165,8 +165,8 @@ class SLAM_Zed_Node(Node):
 
         # Retrieve spatial_map when ready
         if self.zed.get_spatial_map_request_status_async() == sl.ERROR_CODE.SUCCESS :
-            self.zed.retrieve_spatial_map_async(self.mesh)
-            print(self.mesh)
+            self.zed.retrieve_spatial_map_async(self.fused_pc)
+            print(self.fused_pc)
 
 
     # This function stops/enable the acquisition stream
