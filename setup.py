@@ -15,6 +15,8 @@ setup(
         # Include all launch files. This is the most important line here!
         (os.path.join('share', package_name), glob('launch/*.launch.py')),
         (os.path.join('share', package_name, 'scripts'), glob('*.sh')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'urdf'), glob('urdf/*.urdf')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -27,7 +29,7 @@ setup(
         'console_scripts': [
         "camera_node = zed_camera.camera_node:main",
         "localisation = zed_camera.localisation:main",
-        "zed_imu_covariance_decorator = zed_camera.zed_imu_covariance_decorator:main"
+        "slam = zed_camera.slam:main",
         ],
     },
 )
