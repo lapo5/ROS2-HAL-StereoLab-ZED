@@ -51,7 +51,6 @@ def generate_launch_description():
     )
 
     # Add nodes to LaunchDescription
-    ld.add_action(rsp_node)
     ld.add_action(zed_wrapper_node)
 
     return ld
