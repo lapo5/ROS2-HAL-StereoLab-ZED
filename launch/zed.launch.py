@@ -34,7 +34,7 @@ def generate_launch_description():
     # ZED Wrapper node
     zed_wrapper_node = Node(
         package='zed_wrapper',
-        node_namespace="/"+camera_name,
+        node_namespace="sensors",
         node_executable='zed_wrapper',
         node_name='zed_node',
         output='screen',
