@@ -43,10 +43,10 @@ def generate_launch_description():
             config_camera,  # Camera related parameters
         ],
         remappings=[
-                    ("/zed2/zed_node/imu/data_raw", "/zed_camera/imu"),
-                    ("/zed2/zed_node/left_raw/image_raw_gray", "/zed_camera/raw_frame"),
-                    ("/zed2/zed_node/odom", "/zed_camera/odom"),
-                    ("/zed2/zed_node/point_cloud/cloud_registered", "/zed_camera/point_cloud"),
+                    ("/sensors/zed_node/imu/data_raw", "/zed_camera/imu"),
+                    ("/sensors/zed_node/left_raw/image_raw_gray", "/zed_camera/raw_frame"),
+                    ("/sensors/zed_node/odom", "/zed_camera/odom"),
+                    ("/sensors/zed_node/point_cloud/cloud_registered", "/zed_camera/point_cloud"),
                    ]
     )
 
