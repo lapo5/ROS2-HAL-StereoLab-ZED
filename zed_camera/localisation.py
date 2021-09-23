@@ -241,8 +241,7 @@ class SLAM_Zed_Node(Node):
 
         now = time.time()
         msg.header = Header()
-        msg.header.stamp.sec = int(now)
-        msg.header.stamp.nanosec = int(now* 1e9) % 1000000000
+        msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = "odom"
         msg.child_frame_id = "zed_link"
 
