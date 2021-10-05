@@ -14,8 +14,8 @@ setup(
         ('share/' + package_name, ['package.xml']),
         # Include all launch files. This is the most important line here!
         (os.path.join('share', package_name), glob('launch/*.launch.py')),
-        (os.path.join('share', package_name, 'scripts'), glob('*.sh')),
-        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'scripts'), glob('scripts/*.sh')),
+        (os.path.join('share', package_name, 'params'), glob('params/*.yaml')),
         (os.path.join('share', package_name, 'urdf'), glob('urdf/*.urdf')),
     ],
     install_requires=['setuptools'],
