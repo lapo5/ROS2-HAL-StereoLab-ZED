@@ -41,6 +41,7 @@ def generate_launch_description():
                     ("/zed_node/left_raw/image_raw_gray", "/zed_camera/raw_frame"),
                     ("/zed_node/odom", "/zed_camera/odom"),
                     ("/zed_node/point_cloud/cloud_registered", "/zed_camera/point_cloud"),
+                    ("/zed_node/depth/depth_registered", "/zed_camera/depth_image"),
         ]
     )
 
