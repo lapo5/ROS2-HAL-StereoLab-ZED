@@ -5,6 +5,10 @@
 /**:
     ros__parameters:
 
+        enable_publish_image_depth: true
+
+        enable_publish_image_stream: true
+
         general:
             camera_model:               'zed2'
             camera_name:                'zed2'

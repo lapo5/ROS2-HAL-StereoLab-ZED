@@ -38,7 +38,7 @@ def generate_launch_description():
         ],
         remappings=[
                     ("/zed_node/imu/data_raw", "/zed_camera/imu"),
-                    ("/zed_node/left_raw/image_raw_color", "/zed_camera/raw_frame"),
+                    ("/zed_node/left_raw/image_raw_gray", "/zed_camera/raw_frame"),
                     ("/zed_node/odom", "/zed_camera/odom"),
                     ("/zed_node/point_cloud/cloud_registered", "/zed_camera/point_cloud"),
                     ("/zed_node/depth/depth_registered", "/zed_camera/depth_image"),
