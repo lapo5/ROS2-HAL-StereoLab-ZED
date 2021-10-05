@@ -5,9 +5,9 @@
 /**:
     ros__parameters:
 
-        force_publish_image_depth: true
+        force_publish_image_depth: false
 
-        force_publish_image_stream: true
+        force_publish_image_stream: false
 
         general:
             camera_model:               'zed2'
@@ -18,8 +18,8 @@
             max_depth:                  5.0            # Max: 40.0
 
         pos_tracking:
-            imu_fusion:                 true             # enable/disable IMU fusion. When set to false, only the optical odometry will be used.
-            publish_imu_tf:             false            # enable/disable the static IMU TF broadcasting
+            imu_fusion:                 false             # enable/disable IMU fusion. When set to false, only the optical odometry will be used.
+            publish_imu_tf:             false             # enable/disable the static IMU TF broadcasting
 
         sensors:
             sensors_image_sync:         false           # Synchronize Sensors messages with latest published video/depth message
