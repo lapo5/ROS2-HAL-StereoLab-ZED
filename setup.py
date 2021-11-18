@@ -22,9 +22,8 @@ setup(
     zip_safe=True,
     maintainer='marco lapolla',
     maintainer_email='marco.lapolla5@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
-    tests_require=['pytest'],
+    description='HAL for ZED2 Camera',
+    license='BSD',
     entry_points={
         'console_scripts': [
         "camera_node = zed_camera.camera_node:main",
