@@ -9,5 +9,5 @@ Also launchers and params for the ros2-wrapper-zed
 
 ## Depend
 
-ROS2
-ros2-wrapper-zed
+- ROS2
+- ros2-wrapper-zed
