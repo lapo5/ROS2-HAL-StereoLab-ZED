@@ -55,22 +55,17 @@ class ZedNode(Node):
         qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
         qos_profile.history = QoSHistoryPolicy.KEEP_LAST
 
-        # Publishers
         self.frame_pub = self.create_publisher(Image, "/zed_camera/raw_frame", qos_profile)
         self.timer = self.create_timer(0.01, self.get_frame)
 
-        # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_video_feed", self.stop_video_feed)
 
 
-    # This function stops/enable the acquisition stream
     def stop_video_feed(self, request, response):
         self.acquire_frame = False
         return response
 
 
-
-    # This function save the current frame in a class attribute
     def get_frame(self):
 
         if self.acquire_frame:
@@ -90,13 +85,11 @@ class ZedNode(Node):
                 self.get_logger().info("Error Grab Image")
 
 
-    # This function stops/enable the acquisition stream
     def exit(self):
         self.acquire_frame = False
 
 
 
-# Main loop function
 def main(args=None):
 
     rclpy.init(args=args)
@@ -111,9 +104,6 @@ def main(args=None):
         print('Exception in ZED Camera Node:', file=sys.stderr)
         raise
     finally:
-        # Destroy the node explicitly
-        # (optional - Done automatically when node is garbage collected)
-        
         node.cam.disable_streaming()
         node.cam.close()
         node.destroy_node()

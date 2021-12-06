@@ -59,7 +59,6 @@ class SLAM_Zed_Node(Node):
         self.rotation_camera[2, 1] = 0.0
         self.rotation_camera[2, 2] = 1.0 
 
-        # Class attributes
         self.bridge = CvBridge()
         self.frame = None
 
@@ -88,13 +87,10 @@ class SLAM_Zed_Node(Node):
         self.py_translation = sl.Translation()
         self.pose_data = sl.Transform()
 
-
         qos_profile = QoSProfile(depth=10)
         qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
         qos_profile.history = QoSHistoryPolicy.KEEP_LAST
 
-
-        # Publishers
         self.pose_pub = self.create_publisher(PoseStamped, "/zed_camera/pose", qos_profile)
         self.odom_pub = self.create_publisher(Odometry, "/zed_camera/odom", qos_profile)
         self.imu_pub  = self.create_publisher(Imu, "/zed_camera/imu", qos_profile)
@@ -119,19 +115,14 @@ class SLAM_Zed_Node(Node):
         self.frame = None
         self.bridge = CvBridge()
 
-        # Service: stop acquisition
         self.stop_service = self.create_service(Empty, "/zed_camera/stop_localisation", self.stop_slam)
-
-
-        # Service: stop acquisition
         self.image_toggle_service = self.create_service(Empty, "/zed_camera/toggle_image_grabbing", self.image_toggle)
-
 
         self.timer = self.create_timer(0.01, self.get_pose)
 
-        self.timer = self.create_timer(0.03, self.get_image)
+        self.timer_2 = self.create_timer(0.03, self.get_image)
 
-    # This function save the current frame in a class attribute
+
     def get_image(self):
 
         if self.grab_image:
@@ -151,14 +142,13 @@ class SLAM_Zed_Node(Node):
                 self.get_logger().info("Error Grab Image")
 
 
-    # This function stops/enable the acquisition stream
     def stop_slam(self, request, response):
         self.do_slam = False
         self.grab_image = False
 
         return response
 
-    # This function stops/enable the acquisition stream
+
     def image_toggle(self, request, response):
  
         self.grab_image = not self.grab_image
@@ -166,7 +156,6 @@ class SLAM_Zed_Node(Node):
         return response
 
 
-    # This function save the current frame in a class attribute
     def get_pose(self):
 
         if self.do_slam:
@@ -235,11 +224,11 @@ class SLAM_Zed_Node(Node):
 
         self.imu_pub.publish(msg)
 
+
     def publish_odom_data(self):
 
         msg = Odometry()
 
-        now = time.time()
         msg.header = Header()
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = "odom"
@@ -259,7 +248,6 @@ class SLAM_Zed_Node(Node):
         rot_wTr = R.from_matrix(world_to_rover[0:3, 0:3])
         quat = rot.as_quat()
 
-        # Translation
         msg.pose.pose.position.x = float(world_to_rover[0, 3])
         msg.pose.pose.position.y = float(world_to_rover[1, 3])
         msg.pose.pose.position.z = float(world_to_rover[2, 3])
@@ -273,13 +261,11 @@ class SLAM_Zed_Node(Node):
         for i in range(0, 6):
             msg.twist.covariance[i * 7] = 1e3
 
-        # short-Rodrigues (angle-axis)
         msg.pose.pose.orientation.x = quat[0]
         msg.pose.pose.orientation.y = quat[1]
         msg.pose.pose.orientation.z = quat[2]
         msg.pose.pose.orientation.w = quat[3]
 
-        # Publish the message
         self.odom_pub.publish(msg)
 
 
@@ -301,13 +287,11 @@ class SLAM_Zed_Node(Node):
         rot = R.from_rotvec([self.rotation[0], self.rotation[1], self.rotation[2]])
         quat = rot.as_quat()
 
-        # short-Rodrigues (angle-axis)
         msg.pose.orientation.x = quat[0]
         msg.pose.orientation.y = quat[1]
         msg.pose.orientation.z = quat[2]
         msg.pose.orientation.w = quat[3]
 
-        # Publish the message
         self.pose_pub.publish(msg)
 
         rot = R.from_quat([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w])
@@ -326,7 +310,7 @@ class SLAM_Zed_Node(Node):
         t = TransformStamped()
 
         t.header.stamp = self.get_clock().now().to_msg()
-        t.header.frame_id = "zed_odom"
+        t.header.frame_id = "odom"
         t.child_frame_id = "zed_link"
 
         t.transform.translation.x = float(world_to_rover[0, 3])
@@ -339,7 +323,7 @@ class SLAM_Zed_Node(Node):
 
         self.br.sendTransform(t)
 
-    # This function stops/enable the acquisition stream
+
     def exit(self):
         self.do_slam = False
 
