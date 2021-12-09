@@ -39,7 +39,7 @@ class ZedNode(Node):
         self.cam = sl.Camera()
         self.status = self.cam.open(self.init)
         if self.status != sl.ERROR_CODE.SUCCESS:
-            print(repr(self.status))
+            self.get_logger().info(repr(self.status))
             sys.exit(1)
 
         self.runtime = sl.RuntimeParameters()
@@ -98,10 +98,10 @@ def main(args=None):
         while node.acquire_frame:
             rclpy.spin(node)
     except KeyboardInterrupt:
-        print('ZED Camera Node stopped cleanly')
+        node.get_logger().info('ZED Camera Node stopped cleanly')
         node.exit()
     except BaseException:
-        print('Exception in ZED Camera Node:', file=sys.stderr)
+        node.get_logger().info('Exception in ZED Camera Node:', file=sys.stderr)
         raise
     finally:
         node.cam.disable_streaming()

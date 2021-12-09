@@ -70,7 +70,7 @@ class SLAM_Zed_Node(Node):
         self.zed = sl.Camera()
         status = self.zed.open(self.init_params)
         if status != sl.ERROR_CODE.SUCCESS:
-            print(repr(status))
+            self.get_logger().info(repr(status))
             sys.exit(1)
 
         self.tracking_params = sl.PositionalTrackingParameters( _enable_memory=True, 
@@ -171,10 +171,10 @@ class SLAM_Zed_Node(Node):
 
                     self.publish_odom_data()
                 else: 
-                    print("Tracking State: {0}".format(tracking_state))
+                    self.get_logger().info("Tracking State: {0}".format(tracking_state))
                     
             else: 
-                print("Error in Grab Localisation ZED2 Data")
+                self.get_logger().info("Error in Grab Localisation ZED2 Data")
 
             if self.zed.get_sensors_data(self.sensors_data, sl.TIME_REFERENCE.CURRENT) == sl.ERROR_CODE.SUCCESS :
                 # Check if the data has been updated since the last time
@@ -336,10 +336,10 @@ def main(args=None):
         while node.do_slam:
             rclpy.spin_once(node)
     except KeyboardInterrupt:
-        print('ZED Loc Node stopped cleanly')
+        node.get_logger().info('ZED Loc Node stopped cleanly')
         node.exit()
     except BaseException:
-        print('Exception in ZED Loc Node:', file=sys.stderr)
+        node.get_logger().info('Exception in ZED Loc Node:', file=sys.stderr)
         raise
     finally:
         # Destroy the node explicitly
